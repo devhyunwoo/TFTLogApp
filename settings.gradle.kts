@@ -1,3 +1,4 @@
+val snapshotVersion : String? = "14101258"
 pluginManagement {
     repositories {
         google {
@@ -16,9 +17,14 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            snapshotVersion?.let {
+                url = uri("https://androidx.dev/snapshots/builds/$it/artifacts/repository")
+            }
+        }
     }
 }
 
 rootProject.name = "TFT_Log"
 include(":app")
- 
+include(":data")
