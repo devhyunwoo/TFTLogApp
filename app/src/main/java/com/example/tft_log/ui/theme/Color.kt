@@ -2,7 +2,7 @@ package com.example.tft_log.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-object Colors {
+object AppColors {
     val Purple80 = Color(0xFFD0BCFF)
     val PurpleGrey80 = Color(0xFFCCC2DC)
     val Pink80 = Color(0xFFEFB8C8)
@@ -13,4 +13,6 @@ object Colors {
 
     val White = Color(color = 0xFFFFFFFF)
     val Black = Color(color = 0xFF000000)
+    val PrimaryColor = Color(color = 0xFF011936)
+    val SecondaryColor = Color(color = 0xFF001F3F)
 }

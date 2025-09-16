@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 abstract class BaseViewModel<State : UiState, Event : UiEvent, Effect : UiEffect>(
     initialValue: State
 ) : ViewModel() {
+    protected val TAG : String = this::class.java.simpleName
     private val _state: MutableStateFlow<State> = MutableStateFlow(initialValue)
     val state: StateFlow<State> = _state.asStateFlow()
 
@@ -33,7 +34,3 @@ abstract class BaseViewModel<State : UiState, Event : UiEvent, Effect : UiEffect
         _state.update { newState }
     }
 }
-
-interface UiState
-interface UiEvent
-interface UiEffect

@@ -6,9 +6,14 @@ import com.example.tft_log.core.UiState
 
 sealed interface MainContract {
     data class State(
-        val textField: String
+        val textField: String,
     ) : UiState
 
-    data object Event : UiEvent
-    data object Effect : UiEffect
+    sealed class Event : UiEvent {
+        data class OnClickSearch(val text: String) : Event()
+    }
+
+    sealed class Effect : UiEffect {
+
+    }
 }

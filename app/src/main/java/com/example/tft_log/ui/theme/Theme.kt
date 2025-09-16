@@ -1,6 +1,5 @@
 package com.example.tft_log.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -10,12 +9,12 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.example.tft_log.ui.theme.Colors.Pink40
-import com.example.tft_log.ui.theme.Colors.Pink80
-import com.example.tft_log.ui.theme.Colors.Purple40
-import com.example.tft_log.ui.theme.Colors.Purple80
-import com.example.tft_log.ui.theme.Colors.PurpleGrey40
-import com.example.tft_log.ui.theme.Colors.PurpleGrey80
+import com.example.tft_log.ui.theme.AppColors.Pink40
+import com.example.tft_log.ui.theme.AppColors.Pink80
+import com.example.tft_log.ui.theme.AppColors.Purple40
+import com.example.tft_log.ui.theme.AppColors.Purple80
+import com.example.tft_log.ui.theme.AppColors.PurpleGrey40
+import com.example.tft_log.ui.theme.AppColors.PurpleGrey80
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
