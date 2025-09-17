@@ -14,6 +14,6 @@ sealed interface MainContract {
     }
 
     sealed class Effect : UiEffect {
-
+        data class ShowErrorMessage(val message: String) : Effect()
     }
 }

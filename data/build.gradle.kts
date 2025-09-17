@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.google.dagger.hilt)
 }
 
 android {
@@ -33,6 +36,18 @@ android {
 }
 
 dependencies {
+    // retrofit
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.retrofit.converter.gson)
+    implementation(libs.squareup.okhttp.logging.interceptor)
+    implementation(libs.retrofit.serialization.converter)
+
+    // serialization
+    implementation(libs.serialization)
+
+    // hilt
+    implementation(libs.google.dagger.hilt.android)
+    kapt(libs.google.dagger.hilt.android.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

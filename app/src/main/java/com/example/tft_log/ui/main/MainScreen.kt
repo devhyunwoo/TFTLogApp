@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,9 +19,20 @@ import com.example.tft_log.ui.theme.AppColors
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel<MainViewModel>()
+    viewModel: MainViewModel = hiltViewModel<MainViewModel>(),
+    showToast: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is MainContract.Effect.ShowErrorMessage -> {
+                    showToast(effect.message)
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier
