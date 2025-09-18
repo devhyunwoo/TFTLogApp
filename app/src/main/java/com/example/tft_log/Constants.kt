@@ -2,5 +2,5 @@ package com.example.tft_log
 
 object Constants {
     const val BASE_URL = "https://asia.api.riotgames.com/"
-    const val API_KEY = "RGAPI-3f86e444-db31-4a54-aec8-76f8263bf9ae"
+    const val API_KEY = "RGAPI-d3945e74-ef86-4eb9-8744-0741691c3036"
 }

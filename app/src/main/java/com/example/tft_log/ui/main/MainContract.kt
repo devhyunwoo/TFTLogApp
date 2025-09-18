@@ -3,10 +3,11 @@ package com.example.tft_log.ui.main
 import com.example.tft_log.core.UiEffect
 import com.example.tft_log.core.UiEvent
 import com.example.tft_log.core.UiState
+import com.tft.log.data.entitiy.MatchEntity
 
 sealed interface MainContract {
     data class State(
-        val textField: String,
+        val matchItems: List<MatchEntity>?
     ) : UiState
 
     sealed class Event : UiEvent {

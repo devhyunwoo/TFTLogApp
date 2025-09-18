@@ -1,7 +1,9 @@
 package com.example.tft_log.di
 
-import com.tft.log.data.repository.RiotRepository
-import com.tft.log.data.repository.RiotRepositoryImpl
+import com.tft.log.data.repository.riot.RiotRepository
+import com.tft.log.data.repository.riot.RiotRepositoryImpl
+import com.tft.log.data.repository.tft.TftRepository
+import com.tft.log.data.repository.tft.TftRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,4 +16,9 @@ interface RepositoryModule {
     fun bindsRiotRepository(
         riotRepository: RiotRepositoryImpl
     ): RiotRepository
+
+    @Binds
+    fun bindsTftRepository(
+        tftRepository: TftRepositoryImpl
+    ): TftRepository
 }

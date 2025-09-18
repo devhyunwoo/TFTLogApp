@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.tft_log.ui.main.composable.MainTopbar
+import com.example.tft_log.ui.main.composable.matchItemsComponent
 import com.example.tft_log.ui.theme.AppColors
 
 @Composable
@@ -51,7 +52,9 @@ fun MainScreen(
         LazyColumn(
             modifier = Modifier.padding(paddingValues)
         ) {
-
+            state.matchItems?.let {
+                matchItemsComponent(matchItems = it)
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.tft.log.data.repository
+package com.tft.log.data.repository.riot
 
 import com.tft.log.data.api.ApiService
 import com.tft.log.data.api.dto.AccountByRiotIdResponse
