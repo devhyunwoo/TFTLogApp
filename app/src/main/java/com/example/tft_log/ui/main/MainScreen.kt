@@ -1,6 +1,8 @@
 package com.example.tft_log.ui.main
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -24,7 +26,6 @@ fun MainScreen(
     showToast: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
     LaunchedEffect(key1 = Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -35,23 +36,33 @@ fun MainScreen(
         }
     }
 
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
+            .padding(top = 10.dp)
             .background(color = AppColors.PrimaryColor)
             .systemBarsPadding()
             .imePadding()
-            .padding(all = 20.dp),
+            .padding(horizontal = 20.dp),
         containerColor = AppColors.PrimaryColor,
-        topBar = {
-            MainTopbar(
-                onClickSearch = { viewModel.setEvent(MainContract.Event.OnClickSearch(it)) }
-            )
-        }
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            contentPadding = PaddingValues(vertical = 10.dp)
         ) {
+            stickyHeader {
+                Box(
+                    modifier = Modifier
+                        .background(color = AppColors.PrimaryColor)
+                        .padding(bottom = 10.dp)
+                ) {
+                    MainTopbar(
+                        onClickSearch = { viewModel.setEvent(MainContract.Event.OnClickSearch(it)) }
+                    )
+                }
+            }
+
             state.matchItems?.let {
                 matchItemsComponent(matchItems = it)
             }

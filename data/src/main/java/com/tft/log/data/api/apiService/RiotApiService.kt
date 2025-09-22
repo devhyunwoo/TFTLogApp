@@ -1,4 +1,4 @@
-package com.tft.log.data.api
+package com.tft.log.data.api.apiService
 
 import com.tft.log.data.api.dto.AccountByRiotIdResponse
 import com.tft.log.data.api.dto.MatchByMatchIdResponse
@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface ApiService {
+interface RiotApiService {
     // 아이디랑 태그로 puuid 가져오기
     @GET("riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}")
     suspend fun getAccountByRiotId(

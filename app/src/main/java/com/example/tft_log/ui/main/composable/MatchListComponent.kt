@@ -1,16 +1,29 @@
 package com.example.tft_log.ui.main.composable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.tft_log.ui.theme.AppColors
 import com.tft.log.data.entitiy.MatchEntity
+import com.tft.log.data.entitiy.Participant
 
 fun LazyListScope.matchItemsComponent(
     matchItems: List<MatchEntity>
@@ -24,14 +37,78 @@ fun LazyListScope.matchItemsComponent(
 fun MatchItem(
     matchItem: MatchEntity
 ) {
-    Column(
+    val bgColor = if (matchItem.me.win) AppColors.WinColor else AppColors.LoseColor
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = AppColors.White),
-        horizontalAlignment = Alignment.Start
+            .padding(top = 10.dp)
+            .background(color = bgColor, shape = RoundedCornerShape(12.dp))
+            .padding(20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(matchItem.gameId.toString())
-        Text(matchItem.gameDatetime)
-        Text(matchItem.gameLength)
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(color = AppColors.LightGoldColor, shape = CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "${matchItem.me.rank}등",
+                color = AppColors.SecondaryColor,
+                fontWeight = FontWeight.W700,
+                fontSize = 20.sp,
+                lineHeight = 28.sp,
+            )
+        }
+        AsyncImage(model = matchItem.me.units.firstOrNull()?.characterImageUrl.orEmpty(), contentDescription = "z")
+        AsyncImage(model = matchItem.me.units.firstOrNull()?.itemsImageUrl?.firstOrNull(), contentDescription = "z")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = matchItem.gameDatetime,
+                fontSize = 14.sp,
+                color = AppColors.Gray700,
+                lineHeight = 20.sp,
+                fontWeight = FontWeight.W500,
+            )
+            Text(
+                text = matchItem.me.datetime,
+                fontSize = 14.sp,
+                color = AppColors.Gray700,
+                lineHeight = 20.sp,
+                fontWeight = FontWeight.W500,
+            )
+        }
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun MatchItemPreview() {
+    MatchItem(
+        matchItem = MatchEntity(
+            isGameEnd = true,
+            gameId = 1234567890,
+            gameDatetime = "3일전",
+            gameLength = "25:30",
+            me = Participant(
+                goldLeft = 10,
+                lastRound = 9,
+                level = 8,
+                rank = 1,
+                puuid = "sample-puuid",
+                id = "sample-id",
+                datetime = "3분",
+                win = true,
+                totalDamage = 5000,
+                units = emptyList()
+            ),
+            participants = emptyList(),
+            gameVersion = "13.12.1"
+        )
+    )
 }

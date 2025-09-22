@@ -2,7 +2,7 @@ package com.example.tft_log.di
 
 import com.example.tft_log.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.tft.log.data.api.ApiService
+import com.tft.log.data.api.apiService.RiotApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,6 +41,7 @@ object AppModule {
 
     @Provides
     @Singleton
+    @RiotApi
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         val contentType = "application/json".toMediaType()
         val json = Json {
@@ -56,7 +57,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService {
+    fun provideApiService(@RiotApi retrofit: Retrofit): RiotApiService {
         return retrofit.create()
     }
 }

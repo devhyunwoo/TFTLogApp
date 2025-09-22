@@ -93,8 +93,15 @@ class MainViewModel @Inject constructor(
             is ApiResult.Success -> {
                 supervisorScope {
                     result.data
-                        .take(10)
-                        .map { matchId -> async { getMatchByMatchId(matchId = matchId) } }
+                        .take(15)
+                        .map { matchId ->
+                            async {
+                                getMatchByMatchId(
+                                    puuid = puuid,
+                                    matchId = matchId
+                                )
+                            }
+                        }
                         .awaitAll()
                 }
             }
@@ -107,14 +114,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getMatchByMatchId(matchId: String) {
+    private suspend fun getMatchByMatchId(puuid: String, matchId: String) {
         when (val result = safeApiCall { tftRepository.getMatchByMatchId(matchId = matchId) }) {
             is ApiResult.Success -> {
                 setState {
                     copy(
-                        matchItems = this.matchItems?.plus(result.data.toMatchEntity()) ?: listOf(
-                            result.data.toMatchEntity()
-                        )
+                        matchItems = this.matchItems?.plus(result.data.toMatchEntity(puuid = puuid))
+                            ?: listOf(
+                                result.data.toMatchEntity(puuid = puuid)
+                            )
                     )
                 }
             }
