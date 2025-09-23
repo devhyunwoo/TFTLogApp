@@ -79,7 +79,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
                         rarity = it.rarity,
                         tier = it.tier
                     )
-                },
+                }.sortedBy { it.rarity },
                 win = participantDTO.win
             )
         }
