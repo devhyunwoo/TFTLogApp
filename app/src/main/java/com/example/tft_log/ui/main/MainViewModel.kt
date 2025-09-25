@@ -1,15 +1,14 @@
 package com.example.tft_log.ui.main
 
 import androidx.lifecycle.viewModelScope
-import com.example.tft_log.core.ApiResult
 import com.example.tft_log.core.BaseViewModel
-import com.example.tft_log.core.safeApiCall
-import com.example.tft_log.ui.main.mapper.toMatchEntity
 import com.tft.log.data.repository.riot.RiotRepository
 import com.tft.log.data.repository.tft.TftRepository
+import com.tft.log.data.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
@@ -20,7 +19,7 @@ class MainViewModel @Inject constructor(
     private val tftRepository: TftRepository,
 ) : BaseViewModel<MainContract.State, MainContract.Event, MainContract.Effect>(
     MainContract.State(
-        matchItems = null
+        matchItems = null,
     )
 ) {
     override fun setEvent(event: MainContract.Event) {
@@ -70,12 +69,12 @@ class MainViewModel @Inject constructor(
     }
 
     suspend fun getAccountByRiotId(gameName: String, tagLine: String) {
-        when (val result = safeApiCall {
+        when (val result =
             riotRepository.getAccountByRiotId(
                 gameName = gameName,
                 tagLine = tagLine
             )
-        }) {
+        ) {
             is ApiResult.Success -> {
                 getMachIdsByPuuid(puuid = result.data.puuid)
             }
@@ -89,7 +88,7 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun getMachIdsByPuuid(puuid: String) {
-        when (val result = safeApiCall { tftRepository.getMatchIdsByPuuid(puuid = puuid) }) {
+        when (val result = tftRepository.getMatchIdsByPuuid(puuid = puuid)) {
             is ApiResult.Success -> {
                 supervisorScope {
                     result.data
@@ -114,15 +113,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getMatchByMatchId(puuid: String, matchId: String) {
-        when (val result = safeApiCall { tftRepository.getMatchByMatchId(matchId = matchId) }) {
+    private suspend fun getMatchByMatchId(puuid: String, matchId: String) = coroutineScope {
+        when (val result = tftRepository.getMatchByMatchId(puuid = puuid, matchId = matchId)) {
             is ApiResult.Success -> {
                 setState {
                     copy(
-                        matchItems = this.matchItems?.plus(result.data.toMatchEntity(puuid = puuid))
-                            ?: listOf(
-                                result.data.toMatchEntity(puuid = puuid)
-                            )
+                        matchItems = this.matchItems?.plus(
+                            result.data
+                        ) ?: listOf(result.data)
                     )
                 }
             }

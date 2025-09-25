@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.tft_log.R
 import com.example.tft_log.ui.theme.AppColors
-import com.tft.log.data.entitiy.MatchEntity
-import com.tft.log.data.entitiy.Participant
+import com.tft.log.data.entity.MatchEntity
+import com.tft.log.data.entity.Participant
 
 fun LazyListScope.matchItemsComponent(
     matchItems: List<MatchEntity>

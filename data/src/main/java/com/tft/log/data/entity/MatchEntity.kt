@@ -1,4 +1,4 @@
-package com.tft.log.data.entitiy
+package com.tft.log.data.entity
 
 data class MatchEntity(
     val isGameEnd: Boolean,

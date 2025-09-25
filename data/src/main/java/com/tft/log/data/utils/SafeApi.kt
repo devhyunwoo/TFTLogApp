@@ -1,4 +1,4 @@
-package com.example.tft_log.core
+package com.tft.log.data.utils
 
 import retrofit2.Response
 

@@ -1,19 +1,20 @@
-package com.example.tft_log.ui.main.mapper
+package com.tft.log.data.entity.mapper
 
-import com.example.tft_log.ui.main.utils.ImageType
-import com.example.tft_log.ui.main.utils.ImageUtils.createImageUrl
-import com.example.tft_log.ui.main.utils.TimeUtils.toMinutes
-import com.example.tft_log.ui.main.utils.TimeUtils.toTimeFormat
-import com.example.tft_log.ui.main.utils.TimeUtils.toYyMMddHHmm
 import com.tft.log.data.api.dto.GameResult
 import com.tft.log.data.api.dto.MatchByMatchIdResponse
-import com.tft.log.data.entitiy.MatchEntity
-import com.tft.log.data.entitiy.Participant
-import com.tft.log.data.entitiy.Unit
+import com.tft.log.data.entity.MatchEntity
+import com.tft.log.data.entity.Participant
+import com.tft.log.data.entity.Unit
+import com.tft.log.data.utils.ImageType
+import com.tft.log.data.utils.ImageUtils.createImageUrl
+import com.tft.log.data.utils.TimeUtils.toMinutes
+import com.tft.log.data.utils.TimeUtils.toTimeFormat
+import com.tft.log.data.utils.TimeUtils.toYyMMddHHmm
 
 
 fun MatchByMatchIdResponse.toMatchEntity(
     puuid: String,
+    images: Map<String, String>
 ): MatchEntity {
     val info = this.info
     val me = info.participants.first { it.puuid == puuid }
@@ -36,7 +37,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
             units = me.units.map {
                 Unit(
                     characterImageUrl = createImageUrl(
-                        it.characterId,
+                        images[it.characterId] ?: it.characterId,
                         ImageType.CHAMPION.type,
                         info.gameVersion
                     ),
@@ -65,7 +66,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
                 units = participantDTO.units.map {
                     Unit(
                         characterImageUrl = createImageUrl(
-                            it.characterId,
+                            images[it.characterId] ?: it.characterId,
                             ImageType.CHAMPION.type,
                             info.gameVersion
                         ),

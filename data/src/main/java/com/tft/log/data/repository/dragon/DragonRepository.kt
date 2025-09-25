@@ -1,9 +1,9 @@
 package com.tft.log.data.repository.dragon
 
 import com.tft.log.data.api.dto.TFTChampionResponse
-import retrofit2.Response
+import com.tft.log.data.utils.ApiResult
 
 interface DragonRepository {
-    suspend fun getVersions(): Response<List<String>>
-    suspend fun getChampions(version: String): Response<TFTChampionResponse>
+    suspend fun getVersions(): ApiResult<List<String>>
+    suspend fun getChampions(version: String): ApiResult<TFTChampionResponse>
 }

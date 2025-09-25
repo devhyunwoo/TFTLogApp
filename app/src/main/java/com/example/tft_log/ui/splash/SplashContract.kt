@@ -6,7 +6,7 @@ import com.example.tft_log.core.UiState
 
 sealed interface SplashContract {
     data class State(
-        val alpha: Float
+        val dummy: String
     ) : UiState
 
     sealed class Event : UiEvent

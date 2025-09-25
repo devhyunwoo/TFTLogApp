@@ -1,19 +1,40 @@
 package com.tft.log.data.repository.tft
 
 import com.tft.log.data.api.apiService.RiotApiService
-import com.tft.log.data.api.dto.MatchByMatchIdResponse
-import retrofit2.Response
+import com.tft.log.data.entity.MatchEntity
+import com.tft.log.data.entity.mapper.toMatchEntity
+import com.tft.log.data.repository.dp.DatabaseRepository
+import com.tft.log.data.utils.ApiResult
+import com.tft.log.data.utils.safeApiCall
 import javax.inject.Inject
 
 class TftRepositoryImpl @Inject constructor(
-    private val riotApiService: RiotApiService
+    private val riotApiService: RiotApiService,
+    private val db: DatabaseRepository
 ) : TftRepository {
-    override suspend fun getMatchIdsByPuuid(puuid: String): Response<List<String>> {
-        return riotApiService.getMatchIdsByPuuid(puuid = puuid)
+    override suspend fun getMatchIdsByPuuid(puuid: String): ApiResult<List<String>> {
+        return safeApiCall { riotApiService.getMatchIdsByPuuid(puuid = puuid) }
     }
 
-    override suspend fun getMatchByMatchId(matchId: String): Response<MatchByMatchIdResponse> {
-        return riotApiService.getMatchByMatchId(matchId = matchId)
-    }
+    override suspend fun getMatchByMatchId(puuid: String, matchId: String): ApiResult<MatchEntity> {
+        return when (val result =
+            safeApiCall { riotApiService.getMatchByMatchId(matchId = matchId) }) {
+            is ApiResult.Success -> {
+                val ids =
+                    result.data.info.participants.flatMap { participant -> participant.units.map { unit -> unit.characterId } }
+                        .distinct()
+                val images = db.getImages(ids)?.associate { it.championId to it.imageName }
+                ApiResult.Success(
+                    data = result.data.toMatchEntity(
+                        puuid = puuid,
+                        images = images ?: hashMapOf()
+                    )
+                )
+            }
 
+            is ApiResult.Error -> {
+                result
+            }
+        }
+    }
 }

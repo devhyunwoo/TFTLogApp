@@ -1,4 +1,4 @@
-package com.example.tft_log.ui.main.utils
+package com.tft.log.data.utils
 
 import android.annotation.SuppressLint
 
