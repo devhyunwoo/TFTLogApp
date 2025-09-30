@@ -6,14 +6,20 @@ object ImageUtils {
         val match = regex.find(version)?.value
         val currentVersion = "$match.1"
         val imageName = when (type) {
-            ImageType.CHAMPION.type -> {
-                val season = Regex("""TFT(\d+)""").find(id)?.groupValues?.get(1)
-                "$id.TFT_Set$season"
+            ImageType.ITEM.type -> {
+                "$id.png"
             }
 
-            else -> id
+            else -> {
+                if (id.contains("png")) {
+                    id
+                } else {
+                    val season = Regex("""TFT(\d+)""").find(id.uppercase())?.groupValues?.get(1)
+                    "$id.TFT_Set$season.png"
+                }
+            }
         }
-        return "https://ddragon.leagueoflegends.com/cdn/$currentVersion/img/$type/$imageName.png"
+        return "https://ddragon.leagueoflegends.com/cdn/$currentVersion/img/$type/$imageName"
     }
 }
 

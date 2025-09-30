@@ -6,8 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class ChampionEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
     @ColumnInfo("championId")
     val championId: String,
     @ColumnInfo("imageName")

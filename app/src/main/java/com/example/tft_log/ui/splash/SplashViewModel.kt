@@ -7,6 +7,7 @@ import com.tft.log.data.repository.datastore.DatastoreRepository
 import com.tft.log.data.repository.dp.DatabaseRepository
 import com.tft.log.data.repository.dragon.DragonRepository
 import com.tft.log.data.utils.ApiResult
+import com.tft.log.data.utils.CommonUtils.compareVersion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -40,14 +41,13 @@ class SplashViewModel @Inject constructor(
     private suspend fun getLatestVersion() = coroutineScope {
         when (val result = dragonRepository.getVersions()) {
             is ApiResult.Success -> {
-                val localLatestVersion: Float =
-                    datastoreRepository.getLatestVersion().first().toFloatOrNull() ?: 0.0f
-                val latestVersion: Float = result.data.first().toFloatOrNull() ?: 0.0f
-
-                if (latestVersion > localLatestVersion) {
-                    val version = latestVersion.toString()
+                val localLatestVersion: String =
+                    datastoreRepository.getLatestVersion().first().ifEmpty { "0.0.0" }
+                val latestVersion: String = result.data.first()
+                if (localLatestVersion.compareVersion(latestVersion) < 0) {
+                    val version = latestVersion
                     datastoreRepository.setLatestVersion(version = version)
-                    val deferred = result.data.take(10).map { version ->
+                    val deferred = result.data.map { version ->
                         async { getChampion(version) }
                     }
                     deferred.awaitAll()

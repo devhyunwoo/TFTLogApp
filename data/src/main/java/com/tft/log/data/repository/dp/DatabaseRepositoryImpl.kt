@@ -7,8 +7,8 @@ import javax.inject.Inject
 class DatabaseRepositoryImpl @Inject constructor(
     private val tftDatabase: TFTDatabase
 ) : DatabaseRepository {
-    override suspend fun getImages(ids: List<String>):List<ChampionEntity>? {
-        return tftDatabase.getTFTDao().getChampionEntities(ids)
+    override suspend fun getImages(ids: List<String>): List<ChampionEntity>? {
+        return tftDatabase.getTFTDao().getChampionEntities(championIds = ids)
     }
 
 

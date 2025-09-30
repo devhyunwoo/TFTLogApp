@@ -37,7 +37,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
             units = me.units.map {
                 Unit(
                     characterImageUrl = createImageUrl(
-                        images[it.characterId] ?: it.characterId,
+                        images[it.characterId.lowercase()] ?: it.characterId,
                         ImageType.CHAMPION.type,
                         info.gameVersion
                     ),
@@ -66,7 +66,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
                 units = participantDTO.units.map {
                     Unit(
                         characterImageUrl = createImageUrl(
-                            images[it.characterId] ?: it.characterId,
+                            images[it.characterId.lowercase()] ?: it.characterId,
                             ImageType.CHAMPION.type,
                             info.gameVersion
                         ),

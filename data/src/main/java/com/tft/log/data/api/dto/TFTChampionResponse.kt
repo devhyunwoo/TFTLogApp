@@ -19,7 +19,7 @@ data class TFTChampionDTO(
     val id: String,
     @SerialName("name")
     val name: String,
-    @SerialName("character_id")
+    @SerialName("tier")
     val tier: Int,
     @SerialName("image")
     val image: ImageDTO

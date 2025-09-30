@@ -3,7 +3,7 @@ package com.example.tft_log.navigation
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
@@ -15,7 +15,7 @@ import com.example.tft_log.ui.splash.SplashScreen
 
 @Composable
 fun TFTLogNavDisplay() {
-    val backStack = remember { mutableStateListOf<Route>(Route.Splash) }
+    val backStack = rememberSaveable { mutableStateListOf<Route>(Route.Splash) }
     val context = LocalContext.current.applicationContext
 
     NavDisplay(

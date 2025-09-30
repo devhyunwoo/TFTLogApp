@@ -6,7 +6,7 @@ import com.tft.log.data.entity.ChampionEntity
 fun TFTChampionResponse.toChampionEntity(): List<ChampionEntity> {
     return this.data.map {
         ChampionEntity(
-            championId = it.value.id,
+            championId = it.value.id.lowercase(),
             imageName = it.value.image.full
         )
     }

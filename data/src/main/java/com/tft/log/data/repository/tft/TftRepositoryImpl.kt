@@ -21,7 +21,7 @@ class TftRepositoryImpl @Inject constructor(
             safeApiCall { riotApiService.getMatchByMatchId(matchId = matchId) }) {
             is ApiResult.Success -> {
                 val ids =
-                    result.data.info.participants.flatMap { participant -> participant.units.map { unit -> unit.characterId } }
+                    result.data.info.participants.flatMap { participant -> participant.units.map { unit -> unit.characterId.lowercase() } }
                         .distinct()
                 val images = db.getImages(ids)?.associate { it.championId to it.imageName }
                 ApiResult.Success(

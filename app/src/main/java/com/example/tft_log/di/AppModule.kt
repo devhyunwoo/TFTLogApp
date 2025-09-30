@@ -5,8 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.example.tft_log.Constants
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.tft.log.data.api.apiService.DragonApiService
 import com.tft.log.data.api.apiService.RiotApiService
 import com.tft.log.data.room.database.TFTDatabase
@@ -103,6 +103,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): TFTDatabase {
-        return Room.databaseBuilder(context, TFTDatabase::class.java, "TFTDatabase").build()
+        return Room.databaseBuilder(context, TFTDatabase::class.java, "TFTDatabase")
+            .fallbackToDestructiveMigrationFrom(true).build()
     }
 }
