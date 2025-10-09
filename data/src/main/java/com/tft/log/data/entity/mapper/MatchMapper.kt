@@ -30,7 +30,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
             level = me.level,
             rank = me.placement,
             puuid = me.puuid,
-            id = me.riotIdGameName + "#" + me.riotIdTagLine.orEmpty(),
+            id = me.riotIdGameName,
             datetime = me.timeEliminated.toMinutes(),
             win = me.win,
             totalDamage = me.totalDamageToPlayers,
@@ -60,7 +60,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
                 level = participantDTO.level,
                 rank = participantDTO.placement,
                 puuid = participantDTO.puuid,
-                id = participantDTO.riotIdGameName + "#" + participantDTO.riotIdTagLine.orEmpty(),
+                id = participantDTO.riotIdGameName,
                 datetime = participantDTO.timeEliminated.toMinutes(),
                 totalDamage = participantDTO.totalDamageToPlayers,
                 units = participantDTO.units.map {

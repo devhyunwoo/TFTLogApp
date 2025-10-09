@@ -25,6 +25,8 @@ class MainViewModel @Inject constructor(
     override fun setEvent(event: MainContract.Event) {
         when (event) {
             is MainContract.Event.OnClickSearch -> {
+                clearSearchResult()
+
                 event.also {
                     when {
                         it.text.isEmpty() -> {
@@ -131,5 +133,9 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun clearSearchResult() {
+        setState { copy(matchItems = emptyList()) }
     }
 }
