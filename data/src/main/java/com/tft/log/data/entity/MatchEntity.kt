@@ -20,7 +20,8 @@ data class Participant(
     val datetime: String,
     val win: Boolean,
     val totalDamage: Int,
-    val units: List<Unit>
+    val units: List<Unit>,
+    val traits: List<Trait>
 )
 
 data class Unit(
@@ -28,5 +29,10 @@ data class Unit(
     val itemsImageUrl: List<String>,
     val rarity: Int,
     val tier: Int
+)
+
+data class Trait(
+    val imageUrl : String,
+    val style : Int
 )
 

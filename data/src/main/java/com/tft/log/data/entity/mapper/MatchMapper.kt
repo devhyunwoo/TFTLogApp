@@ -4,6 +4,7 @@ import com.tft.log.data.api.dto.GameResult
 import com.tft.log.data.api.dto.MatchByMatchIdResponse
 import com.tft.log.data.entity.MatchEntity
 import com.tft.log.data.entity.Participant
+import com.tft.log.data.entity.Trait
 import com.tft.log.data.entity.Unit
 import com.tft.log.data.utils.ImageType
 import com.tft.log.data.utils.ImageUtils.createImageUrl
@@ -14,7 +15,8 @@ import com.tft.log.data.utils.TimeUtils.toYyMMddHHmm
 
 fun MatchByMatchIdResponse.toMatchEntity(
     puuid: String,
-    images: Map<String, String>
+    championImages: Map<String, String>,
+    traitImages: Map<String, String>
 ): MatchEntity {
     val info = this.info
     val me = info.participants.first { it.puuid == puuid }
@@ -30,26 +32,36 @@ fun MatchByMatchIdResponse.toMatchEntity(
             level = me.level,
             rank = me.placement,
             puuid = me.puuid,
-            id = me.riotIdGameName,
+            id = me.riotIdGameName + "#" + me.riotIdTagline,
             datetime = me.timeEliminated.toMinutes(),
             win = me.win,
             totalDamage = me.totalDamageToPlayers,
             units = me.units.map {
                 Unit(
                     characterImageUrl = createImageUrl(
-                        images[it.characterId.lowercase()] ?: it.characterId,
-                        ImageType.CHAMPION.type,
-                        info.gameVersion
+                        id = championImages[it.characterId.lowercase()] ?: it.characterId,
+                        type = ImageType.CHAMPION.type,
+                        version = info.gameVersion
                     ),
                     itemsImageUrl = it.itemNames.map { itemName ->
                         createImageUrl(
-                            itemName,
-                            ImageType.ITEM.type,
-                            info.gameVersion
+                            id = itemName,
+                            type = ImageType.ITEM.type,
+                            version = info.gameVersion
                         )
                     },
                     rarity = it.rarity,
                     tier = it.tier
+                )
+            },
+            traits = me.traits.map {
+                Trait(
+                    imageUrl = createImageUrl(
+                        id = traitImages[it.name.lowercase()] ?: it.name,
+                        type = ImageType.TRAIT.type,
+                        version = info.gameVersion
+                    ),
+                    style = it.style
                 )
             }
         ),
@@ -60,13 +72,13 @@ fun MatchByMatchIdResponse.toMatchEntity(
                 level = participantDTO.level,
                 rank = participantDTO.placement,
                 puuid = participantDTO.puuid,
-                id = participantDTO.riotIdGameName,
+                id = participantDTO.riotIdGameName + "#" + participantDTO.riotIdTagline,
                 datetime = participantDTO.timeEliminated.toMinutes(),
                 totalDamage = participantDTO.totalDamageToPlayers,
                 units = participantDTO.units.map {
                     Unit(
                         characterImageUrl = createImageUrl(
-                            images[it.characterId.lowercase()] ?: it.characterId,
+                            championImages[it.characterId.lowercase()] ?: it.characterId,
                             ImageType.CHAMPION.type,
                             info.gameVersion
                         ),
@@ -81,8 +93,18 @@ fun MatchByMatchIdResponse.toMatchEntity(
                         tier = it.tier
                     )
                 }.sortedBy { it.rarity },
-                win = participantDTO.win
+                win = participantDTO.win,
+                traits = participantDTO.traits.map {
+                    Trait(
+                        imageUrl = createImageUrl(
+                            id = traitImages[it.name.lowercase()] ?: it.name,
+                            type = ImageType.TRAIT.type,
+                            version = info.gameVersion
+                        ),
+                        style = it.style
+                    )
+                }
             )
-        }
+        }.sortedBy { it.rank }
     )
 }

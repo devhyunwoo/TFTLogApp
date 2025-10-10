@@ -67,8 +67,8 @@ data class ParticipantDTO(
     val puuid: String,
     @SerialName("riotIdGameName")
     val riotIdGameName: String,
-    @SerialName("riotIdTagLine")
-    val riotIdTagLine: String? = null,
+    @SerialName("riotIdTagline")
+    val riotIdTagline: String? = null,
     @SerialName("time_eliminated")
     val timeEliminated: Float,
     @SerialName("total_damage_to_players")

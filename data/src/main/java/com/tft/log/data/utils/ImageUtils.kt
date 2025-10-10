@@ -25,5 +25,7 @@ object ImageUtils {
 
 enum class ImageType(val type: String) {
     CHAMPION("tft-champion"),
-    ITEM("tft-item")
+    ITEM("tft-item"),
+
+    TRAIT("tft-trait")
 }

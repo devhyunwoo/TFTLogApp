@@ -19,14 +19,13 @@ class MainViewModel @Inject constructor(
     private val tftRepository: TftRepository,
 ) : BaseViewModel<MainContract.State, MainContract.Event, MainContract.Effect>(
     MainContract.State(
-        matchItems = null,
+        matchItems = null, initialText = "", isLoading = false
     )
 ) {
     override fun setEvent(event: MainContract.Event) {
         when (event) {
             is MainContract.Event.OnClickSearch -> {
                 clearSearchResult()
-
                 event.also {
                     when {
                         it.text.isEmpty() -> {
@@ -57,7 +56,23 @@ class MainViewModel @Inject constructor(
                 }
                 val (gameName, tagLine) = event.text.split("#")
                 viewModelScope.launch {
+                    setState { copy(isLoading = true) }
                     getAccountByRiotId(gameName = gameName, tagLine = tagLine)
+                    setState { copy(isLoading = false) }
+                }
+            }
+
+            is MainContract.Event.OnClickID -> {
+                clearSearchResult()
+                setState {
+                    copy(
+                        initialText = event.participant.id.replace(" ", "")
+                    )
+                }
+                viewModelScope.launch {
+                    setState { copy(isLoading = true) }
+                    getMachIdsByPuuid(puuid = event.participant.puuid)
+                    setState { copy(isLoading = false) }
                 }
             }
         }
@@ -71,12 +86,9 @@ class MainViewModel @Inject constructor(
     }
 
     suspend fun getAccountByRiotId(gameName: String, tagLine: String) {
-        when (val result =
-            riotRepository.getAccountByRiotId(
-                gameName = gameName,
-                tagLine = tagLine
-            )
-        ) {
+        when (val result = riotRepository.getAccountByRiotId(
+            gameName = gameName, tagLine = tagLine
+        )) {
             is ApiResult.Success -> {
                 getMachIdsByPuuid(puuid = result.data.puuid)
             }
@@ -93,17 +105,13 @@ class MainViewModel @Inject constructor(
         when (val result = tftRepository.getMatchIdsByPuuid(puuid = puuid)) {
             is ApiResult.Success -> {
                 supervisorScope {
-                    result.data
-                        .take(15)
-                        .map { matchId ->
-                            async {
-                                getMatchByMatchId(
-                                    puuid = puuid,
-                                    matchId = matchId
-                                )
-                            }
+                    result.data.take(15).map { matchId ->
+                        async {
+                            getMatchByMatchId(
+                                puuid = puuid, matchId = matchId
+                            )
                         }
-                        .awaitAll()
+                    }.awaitAll()
                 }
             }
 

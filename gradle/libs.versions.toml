@@ -25,6 +25,7 @@ datastore = "1.1.7"
 room = "2.8.1"
 navigation3Ui = "1.0.0-alpha10"
 navigation3Runtime = "1.0.0-alpha10"
+lottieVersion = "6.6.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -71,6 +72,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-complier = { module = "androidx.room:room-compiler", version.ref = "room" }
 navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3Ui" }
 navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "navigation3Runtime" }
+airbnb-lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieVersion"}
 
 
 [plugins]

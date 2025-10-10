@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,12 +39,18 @@ import com.example.tft_log.ui.theme.AppColors
 
 @Composable
 fun MainTopbar(
-    onClickSearch: (String) -> Unit
+    onClickSearch: (String) -> Unit,
+    initialText: String
 ) {
     val textFieldState = rememberTextFieldState()
     val currentText by remember {
-        derivedStateOf { textFieldState.text.toString() } // 👈 자동 추적
+        derivedStateOf { textFieldState.text.toString() }
     }
+
+    LaunchedEffect(key1 = initialText) {
+        textFieldState.edit { replace(0, length, initialText) }
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,7 +91,10 @@ fun MainTopbar(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (currentText.isEmpty()) {
-                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
                             innerTextField()
                             Text(
                                 modifier = Modifier.padding(start = 3.dp),
@@ -121,5 +131,5 @@ fun MainTopbar(
 @Preview(showBackground = true)
 @Composable
 fun MainTopbarPreview() {
-    MainTopbar(onClickSearch = {})
+    MainTopbar(onClickSearch = {}, initialText = "")
 }

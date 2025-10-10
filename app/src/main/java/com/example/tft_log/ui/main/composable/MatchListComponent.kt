@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,16 +42,18 @@ import com.tft.log.data.entity.MatchEntity
 import com.tft.log.data.entity.Participant
 
 fun LazyListScope.matchItemsComponent(
-    matchItems: List<MatchEntity>
+    matchItems: List<MatchEntity>,
+    onClickID: (Participant) -> Unit
 ) {
     items(items = matchItems, key = { it.gameId }) { matchItem ->
-        MatchItem(matchItem = matchItem)
+        MatchItem(matchItem = matchItem, onClickID = onClickID)
     }
 }
 
 @Composable
 fun MatchItem(
-    matchItem: MatchEntity
+    matchItem: MatchEntity,
+    onClickID: (Participant) -> Unit
 ) {
     val bgColor = if (matchItem.me.win) AppColors.WinColor else AppColors.LoseColor
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -58,6 +63,24 @@ fun MatchItem(
             .padding(top = 10.dp)
             .background(color = bgColor, shape = RoundedCornerShape(12.dp))
     ) {
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            verticalArrangement = Arrangement.spacedBy(3.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            matchItem.me.traits.forEach { trait ->
+                AsyncImage(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(shape = RoundedCornerShape(12.dp)),
+                    model = trait.imageUrl,
+                    contentDescription = "특성",
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -153,8 +176,13 @@ fun MatchItem(
                 .padding(vertical = 5.dp)
         ) {
             if (expanded) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = AppColors.Gray500
+                )
                 matchItem.participants.forEach { participant ->
-                    ParticipantItem(participant = participant)
+                    ParticipantItem(participant = participant, onClickID = onClickID)
                 }
             }
             Row(
@@ -180,12 +208,84 @@ fun MatchItem(
 }
 
 @Composable
-fun ParticipantItem(participant: Participant) {
-    Row(modifier = Modifier.fillMaxWidth()){
-        Text(
-            text = participant.id
-        )
+fun ParticipantItem(participant: Participant, onClickID: (Participant) -> Unit) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, top = 5.dp, bottom = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(3.dp)
+    ) {
+        item {
+            Box(
+                modifier = Modifier
+                    .background(color = AppColors.Gray200, shape = CircleShape)
+                    .size(20.dp), contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = participant.rank.toString(),
+                    fontSize = 10.sp,
+                    color = AppColors.Black,
+                    fontWeight = FontWeight.W500
+                )
+            }
+            Text(
+                modifier = Modifier.clickable {
+                    onClickID(participant)
+                },
+                text = participant.id,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.W500,
+                textDecoration = TextDecoration.Underline,
+                color = AppColors.Black
+            )
+        }
+        items(items = participant.units) { unit ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(0.4.dp)) {
+                    repeat(unit.tier) {
+                        Icon(
+                            painter = painterResource(R.drawable.img_star),
+                            modifier = Modifier.size(4.dp),
+                            contentDescription = "티어",
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
+                AsyncImage(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(shape = RoundedCornerShape(12.dp)),
+                    model = unit.characterImageUrl,
+                    contentDescription = "캐릭터",
+                    contentScale = ContentScale.Crop
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(0.4.dp)) {
+                    unit.itemsImageUrl.forEach { itemUrl ->
+                        AsyncImage(
+                            modifier = Modifier
+                                .clip(shape = CircleShape)
+                                .size(6.dp),
+                            model = itemUrl,
+                            contentDescription = "아이템",
+                        )
+                    }
+                }
+            }
+        }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ParticipantItemPreview() {
+    ParticipantItem(
+        participant = Participant(
+            5000, 13, 5, 2, "puuid", "id", "17:42", true, 4000, listOf(), listOf()
+        ), {}
+    )
 }
 
 @Preview(showBackground = true)
@@ -207,10 +307,12 @@ fun MatchItemPreview() {
                 datetime = "3분",
                 win = true,
                 totalDamage = 5000,
-                units = emptyList()
+                units = emptyList(),
+                traits = emptyList()
             ),
             participants = emptyList(),
             gameVersion = "13.12.1"
-        )
+        ),
+        {}
     )
 }

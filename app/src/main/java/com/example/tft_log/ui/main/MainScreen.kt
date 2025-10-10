@@ -12,10 +12,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.tft_log.ui.common.LoadingView
 import com.example.tft_log.ui.main.composable.MainTopbar
 import com.example.tft_log.ui.main.composable.matchItemsComponent
 import com.example.tft_log.ui.theme.AppColors
@@ -23,7 +25,7 @@ import com.example.tft_log.ui.theme.AppColors
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel<MainViewModel>(),
-    showToast: (String) -> Unit
+    showToast: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = Unit) {
@@ -58,13 +60,26 @@ fun MainScreen(
                         .padding(bottom = 10.dp)
                 ) {
                     MainTopbar(
-                        onClickSearch = { viewModel.setEvent(MainContract.Event.OnClickSearch(it)) }
+                        onClickSearch = { viewModel.setEvent(MainContract.Event.OnClickSearch(it)) },
+                        initialText = state.initialText
                     )
                 }
             }
 
             state.matchItems?.let {
-                matchItemsComponent(matchItems = it)
+                matchItemsComponent(matchItems = it, onClickID = { participant ->
+                    viewModel.setEvent(MainContract.Event.OnClickID(participant = participant))
+                })
+            }
+        }
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                LoadingView()
             }
         }
     }
