@@ -27,11 +27,10 @@ class TftRepositoryImpl @Inject constructor(
                     db.getChampions(championIds)?.associate { it.championId to it.imageName }
 
                 val traitIds =
-                    result.data.info.participants.flatMap { participant -> participant.traits.map { trait -> trait.name } }
+                    result.data.info.participants.flatMap { participant -> participant.traits.map { trait -> trait.name.lowercase() } }
                         .distinct()
                 val traitImages =
                     db.getTraits(traitIds)?.associate { it.traitId to it.imageName }
-
                 ApiResult.Success(
                     data = result.data.toMatchEntity(
                         puuid = puuid,

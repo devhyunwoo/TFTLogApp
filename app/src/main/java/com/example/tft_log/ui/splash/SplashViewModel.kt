@@ -48,10 +48,12 @@ class SplashViewModel @Inject constructor(
                 if (localLatestVersion.compareVersion(latestVersion) < 0) {
                     val version = latestVersion
                     datastoreRepository.setLatestVersion(version = version)
-                    val deferred = result.data.map { version ->
+                    val deferred = result.data.asSequence().filter {
+                        (it.slice(0..1).toIntOrNull() ?: 0) > 12
+                    }.map { version ->
                         async { getChampion(version) }
                         async { getTrait(version) }
-                    }
+                    }.toList()
                     deferred.awaitAll()
                 }
             }

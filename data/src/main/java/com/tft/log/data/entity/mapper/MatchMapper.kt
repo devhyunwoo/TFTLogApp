@@ -54,7 +54,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
                     tier = it.tier
                 )
             },
-            traits = me.traits.map {
+            traits = me.traits.filter { it.style != 0 }.map {
                 Trait(
                     imageUrl = createImageUrl(
                         id = traitImages[it.name.lowercase()] ?: it.name,
@@ -63,7 +63,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
                     ),
                     style = it.style
                 )
-            }
+            }.sortedBy { it.style }
         ),
         participants = info.participants.map { participantDTO ->
             Participant(
@@ -94,7 +94,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
                     )
                 }.sortedBy { it.rarity },
                 win = participantDTO.win,
-                traits = participantDTO.traits.map {
+                traits = participantDTO.traits.filter { it.style != 0 }.map {
                     Trait(
                         imageUrl = createImageUrl(
                             id = traitImages[it.name.lowercase()] ?: it.name,
@@ -103,7 +103,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
                         ),
                         style = it.style
                     )
-                }
+                }.sortedBy { it.style }
             )
         }.sortedBy { it.rank }
     )

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -35,9 +36,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.example.tft_log.R
+import com.example.tft_log.ui.common.CustomAsyncImage
 import com.example.tft_log.ui.theme.AppColors
+import com.example.tft_log.utils.ColorUtils.getTraitColor
 import com.tft.log.data.entity.MatchEntity
 import com.tft.log.data.entity.Participant
 
@@ -67,18 +69,28 @@ fun MatchItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp),
+            maxItemsInEachRow = 5,
             verticalArrangement = Arrangement.spacedBy(3.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+            horizontalArrangement = Arrangement.spacedBy(
+                2.dp,
+                alignment = Alignment.CenterHorizontally
+            )
         ) {
             matchItem.me.traits.forEach { trait ->
-                AsyncImage(
+                Box(
                     modifier = Modifier
-                        .size(30.dp)
-                        .clip(shape = RoundedCornerShape(12.dp)),
-                    model = trait.imageUrl,
-                    contentDescription = "특성",
-                    contentScale = ContentScale.Crop
-                )
+                        .background(color = getTraitColor(trait.style), shape = CircleShape)
+                        .padding(5.dp), contentAlignment = Alignment.Center
+                ) {
+                    CustomAsyncImage(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(shape = RoundedCornerShape(12.dp)),
+                        model = trait.imageUrl,
+                        contentDescription = "특성",
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
         }
         Row(
@@ -127,7 +139,7 @@ fun MatchItem(
                                 )
                             }
                         }
-                        AsyncImage(
+                        CustomAsyncImage(
                             modifier = Modifier
                                 .size(50.dp)
                                 .clip(shape = RoundedCornerShape(12.dp)),
@@ -137,7 +149,7 @@ fun MatchItem(
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                             unit.itemsImageUrl.forEach { itemUrl ->
-                                AsyncImage(
+                                CustomAsyncImage(
                                     modifier = Modifier
                                         .clip(shape = CircleShape)
                                         .size(15.dp),
@@ -240,7 +252,23 @@ fun ParticipantItem(participant: Participant, onClickID: (Participant) -> Unit) 
                 color = AppColors.Black
             )
         }
-        items(items = participant.units) { unit ->
+        itemsIndexed(items = participant.traits, key = { i, _ -> "trait_$i" }) { _, trait ->
+            Box(
+                modifier = Modifier
+                    .background(color = getTraitColor(trait.style), shape = CircleShape)
+                    .padding(2.dp), contentAlignment = Alignment.Center
+            ) {
+                CustomAsyncImage(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .clip(shape = RoundedCornerShape(12.dp)),
+                    model = trait.imageUrl,
+                    contentDescription = "특성",
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+        itemsIndexed(items = participant.units, key = { i, _ -> "champion_$i" }) { _, unit ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -254,7 +282,7 @@ fun ParticipantItem(participant: Participant, onClickID: (Participant) -> Unit) 
                         )
                     }
                 }
-                AsyncImage(
+                CustomAsyncImage(
                     modifier = Modifier
                         .size(20.dp)
                         .clip(shape = RoundedCornerShape(12.dp)),
@@ -264,7 +292,7 @@ fun ParticipantItem(participant: Participant, onClickID: (Participant) -> Unit) 
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(0.4.dp)) {
                     unit.itemsImageUrl.forEach { itemUrl ->
-                        AsyncImage(
+                        CustomAsyncImage(
                             modifier = Modifier
                                 .clip(shape = CircleShape)
                                 .size(6.dp),

@@ -30,4 +30,11 @@ object AppColors {
     val Gray700 = Color(0xFF616161)
     val Gray800 = Color(0xFF424242)
     val Gray900 = Color(0xFF212121)
+
+    val Red = Color(0xFFFF0000)
+
+    val Bronze = Color(0xFFCD7F32)
+    val Silver = Color(0xFFC0C0C0)
+    val Gold = Color(0xFFFFD700)
+    val Chromatic = Color(0xFFFF00FF)
 }
