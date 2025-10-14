@@ -12,7 +12,7 @@ data class MatchEntity(
 
 data class Participant(
     val goldLeft: Int,
-    val lastRound: Int,
+    val lastRound: String,
     val level: Int,
     val rank: Int,
     val puuid: String,

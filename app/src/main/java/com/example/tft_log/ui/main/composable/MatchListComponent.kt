@@ -27,9 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -37,9 +35,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tft_log.R
-import com.example.tft_log.ui.common.CustomAsyncImage
+import com.example.tft_log.ui.common.ChampionItem
+import com.example.tft_log.ui.common.ChampionItemSize
+import com.example.tft_log.ui.common.TraitItem
+import com.example.tft_log.ui.common.TraitItemSize
 import com.example.tft_log.ui.theme.AppColors
-import com.example.tft_log.utils.ColorUtils.getTraitColor
 import com.tft.log.data.entity.MatchEntity
 import com.tft.log.data.entity.Participant
 
@@ -77,20 +77,7 @@ fun MatchItem(
             )
         ) {
             matchItem.me.traits.forEach { trait ->
-                Box(
-                    modifier = Modifier
-                        .background(color = getTraitColor(trait.style), shape = CircleShape)
-                        .padding(5.dp), contentAlignment = Alignment.Center
-                ) {
-                    CustomAsyncImage(
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clip(shape = RoundedCornerShape(12.dp)),
-                        model = trait.imageUrl,
-                        contentDescription = "특성",
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                TraitItem(TraitItemSize.MEDIUM, trait = trait)
             }
         }
         Row(
@@ -126,39 +113,7 @@ fun MatchItem(
                 ),
             ) {
                 matchItem.me.units.forEach { unit ->
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                            repeat(unit.tier) {
-                                Icon(
-                                    painter = painterResource(R.drawable.img_star),
-                                    modifier = Modifier.size(10.dp),
-                                    contentDescription = "티어",
-                                    tint = Color.Unspecified
-                                )
-                            }
-                        }
-                        CustomAsyncImage(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(shape = RoundedCornerShape(12.dp)),
-                            model = unit.characterImageUrl,
-                            contentDescription = "캐릭터",
-                            contentScale = ContentScale.Crop
-                        )
-                        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                            unit.itemsImageUrl.forEach { itemUrl ->
-                                CustomAsyncImage(
-                                    modifier = Modifier
-                                        .clip(shape = CircleShape)
-                                        .size(15.dp),
-                                    model = itemUrl,
-                                    contentDescription = "아이템",
-                                )
-                            }
-                        }
-                    }
+                    ChampionItem(size = ChampionItemSize.MEDIUM, unit = unit)
                 }
             }
             Column(
@@ -221,86 +176,122 @@ fun MatchItem(
 
 @Composable
 fun ParticipantItem(participant: Participant, onClickID: (Participant) -> Unit) {
-    LazyRow(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, top = 5.dp, bottom = 5.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(3.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
-        item {
-            Box(
-                modifier = Modifier
-                    .background(color = AppColors.Gray200, shape = CircleShape)
-                    .size(20.dp), contentAlignment = Alignment.Center
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(color = AppColors.Gray200, shape = CircleShape)
+                        .size(20.dp), contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = participant.rank.toString(),
+                        fontSize = 10.sp,
+                        color = AppColors.Black,
+                        fontWeight = FontWeight.W500
+                    )
+                }
+                Text(
+                    modifier = Modifier.clickable {
+                        onClickID(participant)
+                    },
+                    text = participant.id,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.W500,
+                    textDecoration = TextDecoration.Underline,
+                    color = AppColors.Black
+                )
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 Text(
-                    text = participant.rank.toString(),
+                    text = participant.lastRound,
                     fontSize = 10.sp,
                     color = AppColors.Black,
+                    fontWeight = FontWeight.W700
+                )
+                Text(
+                    text = participant.datetime,
+                    fontSize = 10.sp,
+                    color = AppColors.Gray900,
                     fontWeight = FontWeight.W500
                 )
             }
-            Text(
-                modifier = Modifier.clickable {
-                    onClickID(participant)
-                },
-                text = participant.id,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W500,
-                textDecoration = TextDecoration.Underline,
-                color = AppColors.Black
-            )
         }
-        itemsIndexed(items = participant.traits, key = { i, _ -> "trait_$i" }) { _, trait ->
-            Box(
-                modifier = Modifier
-                    .background(color = getTraitColor(trait.style), shape = CircleShape)
-                    .padding(2.dp), contentAlignment = Alignment.Center
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                CustomAsyncImage(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .clip(shape = RoundedCornerShape(12.dp)),
-                    model = trait.imageUrl,
-                    contentDescription = "특성",
-                    contentScale = ContentScale.Crop
-                )
+                participant.traits.forEach { trait ->
+                    TraitItem(size = TraitItemSize.SMALL, trait = trait)
+                }
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_coin),
+                        contentDescription = "코인",
+                        modifier = Modifier.size(15.dp),
+                        tint = Color.Unspecified
+                    )
+                    Text(
+                        text = participant.goldLeft.toString(),
+                        fontSize = 10.sp,
+                        color = AppColors.Black,
+                        fontWeight = FontWeight.W700
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_hammer),
+                        contentDescription = "딜량",
+                        modifier = Modifier.size(15.dp),
+                        tint = Color.Unspecified
+                    )
+                    Text(
+                        text = participant.totalDamage.toString(),
+                        fontSize = 10.sp,
+                        color = AppColors.Gray900,
+                        fontWeight = FontWeight.W500
+                    )
+                }
             }
         }
-        itemsIndexed(items = participant.units, key = { i, _ -> "champion_$i" }) { _, unit ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(0.4.dp)) {
-                    repeat(unit.tier) {
-                        Icon(
-                            painter = painterResource(R.drawable.img_star),
-                            modifier = Modifier.size(4.dp),
-                            contentDescription = "티어",
-                            tint = Color.Unspecified
-                        )
-                    }
-                }
-                CustomAsyncImage(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clip(shape = RoundedCornerShape(12.dp)),
-                    model = unit.characterImageUrl,
-                    contentDescription = "캐릭터",
-                    contentScale = ContentScale.Crop
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(0.4.dp)) {
-                    unit.itemsImageUrl.forEach { itemUrl ->
-                        CustomAsyncImage(
-                            modifier = Modifier
-                                .clip(shape = CircleShape)
-                                .size(6.dp),
-                            model = itemUrl,
-                            contentDescription = "아이템",
-                        )
-                    }
-                }
+        LazyRow {
+            itemsIndexed(items = participant.units, key = { i, _ -> "champion_$i" }) { _, unit ->
+                ChampionItem(size = ChampionItemSize.SMALL, unit = unit)
             }
         }
     }
@@ -311,7 +302,7 @@ fun ParticipantItem(participant: Participant, onClickID: (Participant) -> Unit) 
 fun ParticipantItemPreview() {
     ParticipantItem(
         participant = Participant(
-            5000, 13, 5, 2, "puuid", "id", "17:42", true, 4000, listOf(), listOf()
+            5000, "9-1", 5, 2, "puuid", "id", "17:42", true, 4000, listOf(), listOf()
         ), {}
     )
 }
@@ -327,7 +318,7 @@ fun MatchItemPreview() {
             gameLength = "25:30",
             me = Participant(
                 goldLeft = 10,
-                lastRound = 9,
+                lastRound = "9-1",
                 level = 8,
                 rank = 1,
                 puuid = "sample-puuid",

@@ -6,6 +6,7 @@ import com.tft.log.data.entity.MatchEntity
 import com.tft.log.data.entity.Participant
 import com.tft.log.data.entity.Trait
 import com.tft.log.data.entity.Unit
+import com.tft.log.data.utils.CommonUtils.formatTftRound
 import com.tft.log.data.utils.ImageType
 import com.tft.log.data.utils.ImageUtils.createImageUrl
 import com.tft.log.data.utils.TimeUtils.toMinutes
@@ -28,7 +29,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
         gameLength = info.gameLength.toTimeFormat(),
         me = Participant(
             goldLeft = me.goldLeft,
-            lastRound = me.lastRound,
+            lastRound = formatTftRound(me.lastRound),
             level = me.level,
             rank = me.placement,
             puuid = me.puuid,
@@ -68,7 +69,7 @@ fun MatchByMatchIdResponse.toMatchEntity(
         participants = info.participants.map { participantDTO ->
             Participant(
                 goldLeft = participantDTO.goldLeft,
-                lastRound = participantDTO.lastRound,
+                lastRound = formatTftRound(participantDTO.lastRound),
                 level = participantDTO.level,
                 rank = participantDTO.placement,
                 puuid = participantDTO.puuid,

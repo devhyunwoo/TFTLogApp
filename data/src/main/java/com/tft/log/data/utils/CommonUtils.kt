@@ -16,4 +16,13 @@ object CommonUtils {
 
         return 0
     }
+
+    fun formatTftRound(round: Int): String {
+        if (round <= 0) return "-"
+        val stage = (round - 1) / 7 + 1
+        val subRound = (round - 1) % 7 + 1
+        return "$stage-$subRound"
+    }
 }
+
+
