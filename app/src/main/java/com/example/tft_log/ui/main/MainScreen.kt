@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +26,7 @@ import com.example.tft_log.ui.common.LoadingView
 import com.example.tft_log.ui.main.composable.MainTopbar
 import com.example.tft_log.ui.main.composable.matchItemsComponent
 import com.example.tft_log.ui.theme.AppColors
+import kotlinx.coroutines.delay
 
 @Composable
 fun MainScreen(
@@ -39,12 +41,18 @@ fun MainScreen(
             matchPagingData.loadState.refresh is LoadState.Loading && state.hasSearch
         }
     }
+    val lazyListState = rememberLazyListState()
 
     LaunchedEffect(key1 = Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is MainContract.Effect.ShowErrorMessage -> {
                     showToast(effect.message)
+                }
+
+                MainContract.Effect.AnimateScrollToTop -> {
+                    delay(800)
+                    lazyListState.animateScrollToItem(index = 0)
                 }
             }
         }
@@ -62,6 +70,7 @@ fun MainScreen(
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.padding(paddingValues),
+            state = lazyListState,
             contentPadding = PaddingValues(vertical = 10.dp)
         ) {
             stickyHeader {

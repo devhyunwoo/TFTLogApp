@@ -77,6 +77,7 @@ class MainViewModel @Inject constructor(
                         initialText = event.participant.id.replace(" ", "")
                     )
                 }
+                setEffect { MainContract.Effect.AnimateScrollToTop }
                 viewModelScope.launch {
                     _puuid.value = event.participant.puuid
                 }
@@ -97,6 +98,7 @@ class MainViewModel @Inject constructor(
         )) {
             is ApiResult.Success -> {
                 setState { copy(hasSearch = true) }
+                setEffect { MainContract.Effect.AnimateScrollToTop }
                 _puuid.value = result.data.puuid
             }
 

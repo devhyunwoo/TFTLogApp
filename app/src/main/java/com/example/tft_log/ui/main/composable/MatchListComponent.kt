@@ -47,7 +47,7 @@ fun LazyListScope.matchItemsComponent(
     matchItems: LazyPagingItems<MatchEntity>,
     onClickID: (Participant) -> Unit
 ) {
-    items(count = matchItems.itemCount, key = { "$it _matchItem" }) { index ->
+    items(count = matchItems.itemCount, key = { "$it - ${matchItems[it]?.gameDatetime}" }) { index ->
         val matchItem = matchItems[index]
         matchItem?.let {
             MatchItem(matchItem = matchItem, onClickID = onClickID)
@@ -61,7 +61,7 @@ fun MatchItem(
     onClickID: (Participant) -> Unit
 ) {
     val bgColor = if (matchItem.me.win) AppColors.WinColor else AppColors.LoseColor
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    var expanded by rememberSaveable(matchItem.me.puuid) { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxWidth()

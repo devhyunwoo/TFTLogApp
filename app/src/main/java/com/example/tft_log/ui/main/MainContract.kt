@@ -8,7 +8,7 @@ import com.tft.log.data.entity.Participant
 sealed interface MainContract {
     data class State(
         val initialText: String,
-        val hasSearch : Boolean
+        val hasSearch: Boolean
     ) : UiState
 
     sealed class Event : UiEvent {
@@ -20,5 +20,7 @@ sealed interface MainContract {
 
     sealed class Effect : UiEffect {
         data class ShowErrorMessage(val message: String) : Effect()
+
+        data object AnimateScrollToTop : Effect()
     }
 }
