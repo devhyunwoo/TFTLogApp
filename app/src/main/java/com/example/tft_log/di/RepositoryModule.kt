@@ -6,6 +6,8 @@ import com.tft.log.data.repository.dp.DatabaseRepository
 import com.tft.log.data.repository.dp.DatabaseRepositoryImpl
 import com.tft.log.data.repository.dragon.DragonRepository
 import com.tft.log.data.repository.dragon.DragonRepositoryImpl
+import com.tft.log.data.repository.paging.PagingRepository
+import com.tft.log.data.repository.paging.PagingRepositoryImpl
 import com.tft.log.data.repository.riot.RiotRepository
 import com.tft.log.data.repository.riot.RiotRepositoryImpl
 import com.tft.log.data.repository.tft.TftRepository
@@ -48,4 +50,10 @@ interface RepositoryModule {
     fun bindsDatabaseRepository(
         databaseRepository: DatabaseRepositoryImpl
     ): DatabaseRepository
+
+    @Binds
+    @Singleton
+    fun bindPagingRepository(
+        pagingRepository: PagingRepositoryImpl
+    ): PagingRepository
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +33,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.LazyPagingItems
 import com.example.tft_log.R
 import com.example.tft_log.ui.common.ChampionItem
 import com.example.tft_log.ui.common.ChampionItemSize
@@ -44,11 +44,14 @@ import com.tft.log.data.entity.MatchEntity
 import com.tft.log.data.entity.Participant
 
 fun LazyListScope.matchItemsComponent(
-    matchItems: List<MatchEntity>,
+    matchItems: LazyPagingItems<MatchEntity>,
     onClickID: (Participant) -> Unit
 ) {
-    items(items = matchItems, key = { it.gameId }) { matchItem ->
-        MatchItem(matchItem = matchItem, onClickID = onClickID)
+    items(count = matchItems.itemCount, key = { "$it _matchItem" }) { index ->
+        val matchItem = matchItems[index]
+        matchItem?.let {
+            MatchItem(matchItem = matchItem, onClickID = onClickID)
+        }
     }
 }
 

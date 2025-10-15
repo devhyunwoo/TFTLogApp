@@ -5,6 +5,7 @@ import com.tft.log.data.api.dto.MatchByMatchIdResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface RiotApiService {
     // 아이디랑 태그로 puuid 가져오기
@@ -18,6 +19,8 @@ interface RiotApiService {
     @GET("tft/match/v1/matches/by-puuid/{puuid}/ids")
     suspend fun getMatchIdsByPuuid(
         @Path("puuid") puuid: String,
+        @Query("start") start: Int,
+        @Query("count") count: Int,
     ): Response<List<String>>
 
     // 매치 아이디로 매치 정보 가져오기

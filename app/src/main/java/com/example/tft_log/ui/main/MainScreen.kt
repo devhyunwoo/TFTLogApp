@@ -11,12 +11,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.tft_log.ui.common.LoadingView
 import com.example.tft_log.ui.main.composable.MainTopbar
 import com.example.tft_log.ui.main.composable.matchItemsComponent
@@ -28,6 +32,14 @@ fun MainScreen(
     showToast: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val matchPagingData = viewModel.matchListFlow.collectAsLazyPagingItems()
+    val isLoadingAppend = matchPagingData.loadState.append is LoadState.Loading
+    val isLoadingRefresh by remember {
+        derivedStateOf {
+            matchPagingData.loadState.refresh is LoadState.Loading && state.hasSearch
+        }
+    }
+
     LaunchedEffect(key1 = Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -37,7 +49,6 @@ fun MainScreen(
             }
         }
     }
-
 
     Scaffold(
         modifier = Modifier
@@ -65,14 +76,23 @@ fun MainScreen(
                     )
                 }
             }
-
-            state.matchItems?.let {
-                matchItemsComponent(matchItems = it, onClickID = { participant ->
-                    viewModel.setEvent(MainContract.Event.OnClickID(participant = participant))
-                })
+            matchItemsComponent(matchItems = matchPagingData, onClickID = { participant ->
+                viewModel.setEvent(MainContract.Event.OnClickID(participant = participant))
+            })
+            if (isLoadingAppend) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LoadingView()
+                    }
+                }
             }
         }
-        if (state.isLoading) {
+        if (isLoadingRefresh) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()

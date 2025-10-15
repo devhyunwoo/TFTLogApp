@@ -1,31 +1,42 @@
 package com.example.tft_log.ui.main
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.tft_log.core.BaseViewModel
+import com.tft.log.data.entity.MatchEntity
+import com.tft.log.data.repository.paging.PagingRepository
 import com.tft.log.data.repository.riot.RiotRepository
-import com.tft.log.data.repository.tft.TftRepository
 import com.tft.log.data.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val riotRepository: RiotRepository,
-    private val tftRepository: TftRepository,
+    private val pagingRepository: PagingRepository
 ) : BaseViewModel<MainContract.State, MainContract.Event, MainContract.Effect>(
     MainContract.State(
-        matchItems = null, initialText = "", isLoading = false
+        initialText = "",
+        hasSearch = false
     )
 ) {
+    private val _puuid = MutableStateFlow<String?>(null)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val matchListFlow: Flow<PagingData<MatchEntity>> = _puuid.filterNotNull().flatMapLatest {
+        pagingRepository.getMatchPagingData(it)
+    }.cachedIn(viewModelScope)
+
     override fun setEvent(event: MainContract.Event) {
         when (event) {
             is MainContract.Event.OnClickSearch -> {
-                clearSearchResult()
                 event.also {
                     when {
                         it.text.isEmpty() -> {
@@ -56,23 +67,18 @@ class MainViewModel @Inject constructor(
                 }
                 val (gameName, tagLine) = event.text.split("#")
                 viewModelScope.launch {
-                    setState { copy(isLoading = true) }
                     getAccountByRiotId(gameName = gameName, tagLine = tagLine)
-                    setState { copy(isLoading = false) }
                 }
             }
 
             is MainContract.Event.OnClickID -> {
-                clearSearchResult()
                 setState {
                     copy(
                         initialText = event.participant.id.replace(" ", "")
                     )
                 }
                 viewModelScope.launch {
-                    setState { copy(isLoading = true) }
-                    getMachIdsByPuuid(puuid = event.participant.puuid)
-                    setState { copy(isLoading = false) }
+                    _puuid.value = event.participant.puuid
                 }
             }
         }
@@ -90,7 +96,8 @@ class MainViewModel @Inject constructor(
             gameName = gameName, tagLine = tagLine
         )) {
             is ApiResult.Success -> {
-                getMachIdsByPuuid(puuid = result.data.puuid)
+                setState { copy(hasSearch = true) }
+                _puuid.value = result.data.puuid
             }
 
             is ApiResult.Error -> {
@@ -99,51 +106,5 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private suspend fun getMachIdsByPuuid(puuid: String) {
-        when (val result = tftRepository.getMatchIdsByPuuid(puuid = puuid)) {
-            is ApiResult.Success -> {
-                supervisorScope {
-                    result.data.take(15).map { matchId ->
-                        async {
-                            getMatchByMatchId(
-                                puuid = puuid, matchId = matchId
-                            )
-                        }
-                    }.awaitAll()
-                }
-            }
-
-            is ApiResult.Error -> {
-                setEffect {
-                    MainContract.Effect.ShowErrorMessage(result.message)
-                }
-            }
-        }
-    }
-
-    private suspend fun getMatchByMatchId(puuid: String, matchId: String) = coroutineScope {
-        when (val result = tftRepository.getMatchByMatchId(puuid = puuid, matchId = matchId)) {
-            is ApiResult.Success -> {
-                setState {
-                    copy(
-                        matchItems = this.matchItems?.plus(
-                            result.data
-                        ) ?: listOf(result.data)
-                    )
-                }
-            }
-
-            is ApiResult.Error -> {
-                setEffect {
-                    MainContract.Effect.ShowErrorMessage(result.message)
-                }
-            }
-        }
-    }
-
-    private fun clearSearchResult() {
-        setState { copy(matchItems = emptyList()) }
     }
 }

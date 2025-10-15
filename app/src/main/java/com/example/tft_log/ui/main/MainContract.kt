@@ -3,14 +3,12 @@ package com.example.tft_log.ui.main
 import com.example.tft_log.core.UiEffect
 import com.example.tft_log.core.UiEvent
 import com.example.tft_log.core.UiState
-import com.tft.log.data.entity.MatchEntity
 import com.tft.log.data.entity.Participant
 
 sealed interface MainContract {
     data class State(
-        val matchItems: List<MatchEntity>?,
         val initialText: String,
-        val isLoading : Boolean,
+        val hasSearch : Boolean
     ) : UiState
 
     sealed class Event : UiEvent {

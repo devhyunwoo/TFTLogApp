@@ -100,4 +100,8 @@ dependencies {
 
     // lottie
     implementation(libs.airbnb.lottie)
+
+    // paging3
+    implementation(libs.paging.compose)
+    implementation(libs.paging.common.ktx)
 }
