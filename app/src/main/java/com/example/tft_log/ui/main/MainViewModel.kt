@@ -7,6 +7,7 @@ import com.example.tft_log.core.BaseViewModel
 import com.tft.log.data.entity.MatchEntity
 import com.tft.log.data.repository.paging.PagingRepository
 import com.tft.log.data.repository.riot.RiotRepository
+import com.tft.log.data.repository.tft.TftRepository
 import com.tft.log.data.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,11 +21,13 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val riotRepository: RiotRepository,
-    private val pagingRepository: PagingRepository
+    private val pagingRepository: PagingRepository,
+    private val tftRepository: TftRepository,
 ) : BaseViewModel<MainContract.State, MainContract.Event, MainContract.Effect>(
     MainContract.State(
         initialText = "",
-        hasSearch = false
+        hasSearch = false,
+        userEntity = null
     )
 ) {
     private val _puuid = MutableStateFlow<String?>(null)
@@ -78,8 +81,11 @@ class MainViewModel @Inject constructor(
                     )
                 }
                 setEffect { MainContract.Effect.AnimateScrollToTop }
-                viewModelScope.launch {
-                    _puuid.value = event.participant.puuid
+                with(event.participant.puuid) {
+                    _puuid.value = this
+                    viewModelScope.launch {
+                        getUserEntity(puuid = this@with)
+                    }
                 }
             }
         }
@@ -99,13 +105,27 @@ class MainViewModel @Inject constructor(
             is ApiResult.Success -> {
                 setState { copy(hasSearch = true) }
                 setEffect { MainContract.Effect.AnimateScrollToTop }
-                _puuid.value = result.data.puuid
+                with(result.data.puuid) {
+                    _puuid.value = this
+                    getUserEntity(puuid = this)
+                }
             }
 
             is ApiResult.Error -> {
                 setEffect {
                     MainContract.Effect.ShowErrorMessage(result.message)
                 }
+            }
+        }
+    }
+
+    suspend fun getUserEntity(puuid: String) {
+        val userEntity = tftRepository.getUserEntity(puuid = puuid)
+        userEntity?.let {
+            setState {
+                copy(
+                    userEntity = userEntity
+                )
             }
         }
     }

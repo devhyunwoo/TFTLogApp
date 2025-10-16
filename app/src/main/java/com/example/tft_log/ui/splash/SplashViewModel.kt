@@ -2,8 +2,8 @@ package com.example.tft_log.ui.splash
 
 import androidx.lifecycle.viewModelScope
 import com.example.tft_log.core.BaseViewModel
-import com.tft.log.data.entity.mapper.toChampionEntity
-import com.tft.log.data.entity.mapper.toTraitMapper
+import com.tft.log.data.entity.mapper.Mapper.toChampionEntity
+import com.tft.log.data.entity.mapper.Mapper.toTraitEntity
 import com.tft.log.data.repository.datastore.DatastoreRepository
 import com.tft.log.data.repository.dp.DatabaseRepository
 import com.tft.log.data.repository.dragon.DragonRepository
@@ -79,7 +79,7 @@ class SplashViewModel @Inject constructor(
     private suspend fun getTrait(version: String) {
         when (val result = dragonRepository.getTraits(version = version)) {
             is ApiResult.Success -> {
-                db.setTraitEntities(result.data.toTraitMapper())
+                db.setTraitEntities(result.data.toTraitEntity())
             }
 
             is ApiResult.Error -> {

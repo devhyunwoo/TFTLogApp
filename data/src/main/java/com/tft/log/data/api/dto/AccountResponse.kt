@@ -5,7 +5,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 
-data class AccountByRiotIdResponse(
+data class AccountResponse(
     @SerialName("puuid")
     val puuid: String,
+    @SerialName("gameName")
+    val gameName: String,
+    @SerialName("tagLine")
+    val tagLine: String
 )

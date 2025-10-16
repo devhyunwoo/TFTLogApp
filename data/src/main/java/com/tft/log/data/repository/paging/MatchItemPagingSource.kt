@@ -24,7 +24,7 @@ class MatchItemPagingSource(
             val nextPage = if (matchIds.size != 5) null else currentPage + 1
             val prevPage = if (currentPage == 1) null else currentPage - 1
             val data = matchIds.mapNotNull { matchId ->
-                tftRepository.getMatchByMatchId(puuid = puuid, matchId = matchId)
+                tftRepository.getMatchEntity(puuid = puuid, matchId = matchId)
             }
             LoadResult.Page(
                 data = data, nextKey = nextPage, prevKey = prevPage

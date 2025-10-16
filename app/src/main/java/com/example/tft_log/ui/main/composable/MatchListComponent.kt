@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemKey
 import com.example.tft_log.R
 import com.example.tft_log.ui.common.ChampionItem
 import com.example.tft_log.ui.common.ChampionItemSize
@@ -47,7 +48,7 @@ fun LazyListScope.matchItemsComponent(
     matchItems: LazyPagingItems<MatchEntity>,
     onClickID: (Participant) -> Unit
 ) {
-    items(count = matchItems.itemCount, key = { "$it - ${matchItems[it]?.gameDatetime}" }) { index ->
+    items(count = matchItems.itemCount, key = matchItems.itemKey { it.gameId }) { index ->
         val matchItem = matchItems[index]
         matchItem?.let {
             MatchItem(matchItem = matchItem, onClickID = onClickID)

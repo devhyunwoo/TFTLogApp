@@ -7,8 +7,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.example.tft_log.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.tft.log.data.api.apiService.AsiaRiotApiService
 import com.tft.log.data.api.apiService.DragonApiService
-import com.tft.log.data.api.apiService.RiotApiService
+import com.tft.log.data.api.apiService.KrRiotApiService
 import com.tft.log.data.room.database.TFTDatabase
 import dagger.Module
 import dagger.Provides
@@ -53,15 +54,32 @@ object AppModule {
 
     @Provides
     @Singleton
-    @RiotApi
-    fun provideRetrofit(client: OkHttpClient): Retrofit {
+    @AsiaRiotApi
+    fun provideAsiaRetrofit(client: OkHttpClient): Retrofit {
         val contentType = "application/json".toMediaType()
         val json = Json {
             ignoreUnknownKeys = true
             isLenient = true
         }
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(Constants.BASE_URL_ASIA)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .client(client)
+            .build()
+    }
+
+
+    @Provides
+    @Singleton
+    @KrRiotApi
+    fun provideKrRetrofit(client: OkHttpClient): Retrofit {
+        val contentType = "application/json".toMediaType()
+        val json = Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL_KR)
             .addConverterFactory(json.asConverterFactory(contentType))
             .client(client)
             .build()
@@ -84,7 +102,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApiService(@RiotApi retrofit: Retrofit): RiotApiService {
+    fun provideApiService(@AsiaRiotApi retrofit: Retrofit): AsiaRiotApiService {
+        return retrofit.create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideKrApiService(@KrRiotApi retrofit: Retrofit): KrRiotApiService {
         return retrofit.create()
     }
 

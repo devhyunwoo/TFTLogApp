@@ -4,11 +4,13 @@ import com.example.tft_log.core.UiEffect
 import com.example.tft_log.core.UiEvent
 import com.example.tft_log.core.UiState
 import com.tft.log.data.entity.Participant
+import com.tft.log.data.entity.UserEntity
 
 sealed interface MainContract {
     data class State(
         val initialText: String,
-        val hasSearch: Boolean
+        val hasSearch: Boolean,
+        val userEntity : UserEntity?
     ) : UiState
 
     sealed class Event : UiEvent {
