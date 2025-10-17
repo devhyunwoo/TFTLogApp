@@ -15,13 +15,11 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.KeyboardActionHandler
 import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,20 +37,13 @@ import com.example.tft_log.ui.theme.AppColors
 
 @Composable
 fun MainTopbar(
+    modifier: Modifier = Modifier,
     onClickSearch: (String) -> Unit,
-    initialText: String
+    textFieldState: TextFieldState,
+    currentText: String,
 ) {
-    val textFieldState = rememberTextFieldState()
-    val currentText by remember {
-        derivedStateOf { textFieldState.text.toString() }
-    }
-
-    LaunchedEffect(key1 = initialText) {
-        textFieldState.edit { replace(0, length, initialText) }
-    }
-
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(color = AppColors.Black, shape = CircleShape)
             .padding(start = 10.dp),
@@ -131,5 +122,9 @@ fun MainTopbar(
 @Preview(showBackground = true)
 @Composable
 fun MainTopbarPreview() {
-    MainTopbar(onClickSearch = {}, initialText = "")
+    MainTopbar(
+        onClickSearch = {},
+        textFieldState = rememberTextFieldState(),
+        currentText = ""
+    )
 }

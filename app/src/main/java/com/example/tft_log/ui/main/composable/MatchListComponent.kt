@@ -48,8 +48,11 @@ fun LazyListScope.matchItemsComponent(
     matchItems: LazyPagingItems<MatchEntity>,
     onClickID: (Participant) -> Unit
 ) {
-    items(count = matchItems.itemCount, key = matchItems.itemKey { it.gameId }) { index ->
-        val matchItem = matchItems[index]
+    items(
+        count = matchItems.itemCount,
+        key = matchItems.itemKey { it.gameId },
+        contentType = { matchItems[it] }) { index ->
+        val matchItem = remember { matchItems[index] }
         matchItem?.let {
             MatchItem(matchItem = matchItem, onClickID = onClickID)
         }

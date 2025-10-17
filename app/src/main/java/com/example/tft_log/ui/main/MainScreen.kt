@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,7 +44,13 @@ fun MainScreen(
         }
     }
     val lazyListState = rememberLazyListState()
-
+    val showCollapsedBar by remember {
+        derivedStateOf { lazyListState.firstVisibleItemIndex > 0 }
+    }
+    val textFieldState = rememberTextFieldState()
+    val currentText by remember {
+        derivedStateOf { textFieldState.text.toString() }
+    }
     LaunchedEffect(key1 = Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -59,6 +66,10 @@ fun MainScreen(
         }
     }
 
+    LaunchedEffect(key1 = state.initialText) {
+        textFieldState.edit { replace(0, length, state.initialText) }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -69,42 +80,65 @@ fun MainScreen(
             .padding(horizontal = 20.dp),
         containerColor = AppColors.PrimaryColor,
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier.padding(paddingValues),
-            state = lazyListState,
-            contentPadding = PaddingValues(vertical = 10.dp)
-        ) {
-            stickyHeader {
-                Box(
-                    modifier = Modifier
-                        .background(color = AppColors.PrimaryColor)
-                        .padding(bottom = 10.dp)
-                ) {
-                    MainTopbar(
-                        onClickSearch = { viewModel.setEvent(MainContract.Event.OnClickSearch(it)) },
-                        initialText = state.initialText
-                    )
-                }
-            }
-
-            state.userEntity?.let { userEntity ->
-                userInfoComponent(userEntity = userEntity)
-            }
-
-            matchItemsComponent(matchItems = matchPagingData, onClickID = { participant ->
-                viewModel.setEvent(MainContract.Event.OnClickID(participant = participant))
-            })
-            if (isLoadingAppend) {
+        Box(contentAlignment = Alignment.TopCenter) {
+            LazyColumn(
+                modifier = Modifier.padding(paddingValues),
+                state = lazyListState,
+                contentPadding = PaddingValues(vertical = 10.dp)
+            ) {
                 item {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                            .background(color = AppColors.PrimaryColor)
+                            .padding(bottom = 10.dp)
                     ) {
-                        LoadingView()
+                        MainTopbar(
+                            onClickSearch = {
+                                viewModel.setEvent(
+                                    MainContract.Event.OnClickSearch(
+                                        it
+                                    )
+                                )
+                            },
+                            textFieldState = textFieldState,
+                            currentText = currentText
+                        )
                     }
                 }
+
+                state.userEntity?.let { userEntity ->
+                    userInfoComponent(userEntity = userEntity)
+                }
+
+                matchItemsComponent(matchItems = matchPagingData, onClickID = { participant ->
+                    viewModel.setEvent(MainContract.Event.OnClickID(participant = participant))
+                })
+                if (isLoadingAppend) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LoadingView()
+                        }
+                    }
+                }
+            }
+            if (showCollapsedBar) {
+                MainTopbar(
+                    modifier = Modifier.padding(top = 10.dp),
+                    onClickSearch = {
+                        viewModel.setEvent(
+                            MainContract.Event.OnClickSearch(
+                                it
+                            )
+                        )
+                    },
+                    textFieldState = textFieldState,
+                    currentText = currentText
+                )
             }
         }
         if (isLoadingRefresh) {
