@@ -1,5 +1,8 @@
 package com.tft.log.data.entity
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class UserEntity(
     val puuid: String?,
     val nickname: String?,

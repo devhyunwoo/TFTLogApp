@@ -1,6 +1,5 @@
 package com.example.tft_log.ui.main.composable
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -61,7 +61,8 @@ fun MatchItem(
     matchItem: MatchEntity,
     onClickID: (Participant) -> Unit
 ) {
-    val bgColor = if (matchItem.me.win) AppColors.WinColor else AppColors.LoseColor
+    val bgColor =
+        remember(matchItem.me.win) { if (matchItem.me.win) AppColors.WinColor else AppColors.LoseColor }
     var expanded by rememberSaveable(matchItem.me.puuid) { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -143,7 +144,6 @@ fun MatchItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .animateContentSize()
                 .padding(vertical = 5.dp)
         ) {
             if (expanded) {

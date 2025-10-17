@@ -6,7 +6,7 @@ object ImageUtils {
         val match = regex.find(version)?.value
         val currentVersion = "$match.1"
         val imageName = when (type) {
-            ImageType.ITEM.type -> {
+            ImageType.ITEM.type, ImageType.PROFILE.type -> {
                 "$id.png"
             }
 
@@ -27,5 +27,6 @@ enum class ImageType(val type: String) {
     CHAMPION("tft-champion"),
     ITEM("tft-item"),
 
-    TRAIT("tft-trait")
+    TRAIT("tft-trait"),
+    PROFILE("profileicon")
 }

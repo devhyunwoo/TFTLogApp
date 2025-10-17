@@ -25,6 +25,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.tft_log.ui.common.LoadingView
 import com.example.tft_log.ui.main.composable.MainTopbar
 import com.example.tft_log.ui.main.composable.matchItemsComponent
+import com.example.tft_log.ui.main.composable.userInfoComponent
 import com.example.tft_log.ui.theme.AppColors
 import kotlinx.coroutines.delay
 
@@ -85,6 +86,11 @@ fun MainScreen(
                     )
                 }
             }
+
+            state.userEntity?.let { userEntity ->
+                userInfoComponent(userEntity = userEntity)
+            }
+
             matchItemsComponent(matchItems = matchPagingData, onClickID = { participant ->
                 viewModel.setEvent(MainContract.Event.OnClickID(participant = participant))
             })

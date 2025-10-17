@@ -1,5 +1,8 @@
 package com.tft.log.data.entity
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class MatchEntity(
     val isGameEnd: Boolean,
     val gameVersion: String,
@@ -32,7 +35,7 @@ data class Unit(
 )
 
 data class Trait(
-    val imageUrl : String,
-    val style : Int
+    val imageUrl: String,
+    val style: Int
 )
 

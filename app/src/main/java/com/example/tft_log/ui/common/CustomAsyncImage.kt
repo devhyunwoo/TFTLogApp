@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.tft_log.ui.theme.AppColors
 
@@ -28,7 +29,9 @@ fun CustomAsyncImage(
         modifier = modifier,
         model = ImageRequest.Builder(LocalContext.current)
             .data(model)
-            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .crossfade(false)
             .build(),
         contentDescription = contentDescription,
         contentScale = contentScale

@@ -145,11 +145,11 @@ object Mapper {
     ): UserEntity {
 
         val tier = league?.let {
-            "${it.tier.displayName} ${it.rank.number}"
+            "${it.tier.displayName}${it.rank.number}"
         }
 
         val lp = league?.let {
-            "${it.leaguePoints} LP"
+            "${it.leaguePoints}LP"
         }
 
         val winRate = if (league != null && league.wins + league.losses > 0) {
@@ -160,15 +160,21 @@ object Mapper {
         } else {
             null
         }
+        val wins = league?.let { "${it.wins}승" }
+        val losses = league?.let { "${it.losses}패" }
         return UserEntity(
             puuid = account?.puuid,
             nickname = "${account?.gameName}#${account?.tagLine}",
             level = summonerLevel.toString(),
-            profileImage = null,
+            profileImage = createImageUrl(
+                id = profileIconId.toString(),
+                type = ImageType.PROFILE.type,
+                version = "15.1.1"
+            ),
             tier = tier,
             lp = lp,
-            wins = league?.wins?.toString(),
-            losses = league?.losses.toString(),
+            wins = wins,
+            losses = losses,
             winRate = winRate
         )
     }

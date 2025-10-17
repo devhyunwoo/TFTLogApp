@@ -80,7 +80,6 @@ class TftRepositoryImpl @Inject constructor(
             val accountData = accountResult as? ApiResult.Success
             val leagueData = leagueResult as? ApiResult.Success
             val summonerData = summonerResult as? ApiResult.Success
-            val a = leagueResult as? ApiResult.Error
             summonerData?.data?.toUserEntity(
                 account = accountData?.data, league = leagueData?.data?.firstOrNull()
             )
