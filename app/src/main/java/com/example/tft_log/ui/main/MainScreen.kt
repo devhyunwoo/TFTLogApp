@@ -44,7 +44,7 @@ fun MainScreen(
         }
     }
     val lazyListState = rememberLazyListState()
-    val showCollapsedBar by remember {
+    val showReactiveBar by remember {
         derivedStateOf { lazyListState.firstVisibleItemIndex > 0 }
     }
     val textFieldState = rememberTextFieldState()
@@ -126,7 +126,7 @@ fun MainScreen(
                     }
                 }
             }
-            if (showCollapsedBar) {
+            if (showReactiveBar) {
                 MainTopbar(
                     modifier = Modifier.padding(top = 10.dp),
                     onClickSearch = {

@@ -19,7 +19,11 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(AppColors.PrimaryColor.toArgb())
         )
         setContent {
-            TFTLogNavDisplay()
+            TFTLogNavDisplay(
+                finish = {
+                    finish()
+                }
+            )
         }
     }
 }
