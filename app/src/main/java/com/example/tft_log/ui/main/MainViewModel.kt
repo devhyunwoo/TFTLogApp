@@ -5,6 +5,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.tft_log.core.BaseViewModel
 import com.tft.log.data.entity.MatchEntity
+import com.tft.log.data.repository.db.DatabaseRepository
 import com.tft.log.data.repository.paging.PagingRepository
 import com.tft.log.data.repository.riot.RiotRepository
 import com.tft.log.data.repository.tft.TftRepository
@@ -23,11 +24,13 @@ class MainViewModel @Inject constructor(
     private val riotRepository: RiotRepository,
     private val pagingRepository: PagingRepository,
     private val tftRepository: TftRepository,
+    private val db: DatabaseRepository
 ) : BaseViewModel<MainContract.State, MainContract.Event, MainContract.Effect>(
     MainContract.State(
         initialText = "",
         hasSearch = false,
-        userEntity = null
+        userEntity = null,
+        recentUserEntities = emptyList()
     )
 ) {
     private val _puuid = MutableStateFlow<String?>(null)
@@ -36,6 +39,12 @@ class MainViewModel @Inject constructor(
     val matchListFlow: Flow<PagingData<MatchEntity>> = _puuid.filterNotNull().flatMapLatest {
         pagingRepository.getMatchPagingData(it)
     }.cachedIn(viewModelScope)
+
+    init {
+        viewModelScope.launch {
+            getUserEntitiesFromDB()
+        }
+    }
 
     override fun setEvent(event: MainContract.Event) {
         when (event) {
@@ -103,7 +112,12 @@ class MainViewModel @Inject constructor(
             gameName = gameName, tagLine = tagLine
         )) {
             is ApiResult.Success -> {
-                setState { copy(hasSearch = true) }
+                setState {
+                    copy(
+                        hasSearch = true,
+                        initialText = "${result.data.gameName}#${result.data.tagLine}"
+                    )
+                }
                 setEffect { MainContract.Effect.AnimateScrollToTop }
                 with(result.data.puuid) {
                     _puuid.value = this
@@ -122,11 +136,21 @@ class MainViewModel @Inject constructor(
     suspend fun getUserEntity(puuid: String) {
         val userEntity = tftRepository.getUserEntity(puuid = puuid)
         userEntity?.let {
+            db.setUserEntity(userEntity = userEntity)
             setState {
                 copy(
                     userEntity = userEntity
                 )
             }
+        }
+    }
+
+    suspend fun getUserEntitiesFromDB() {
+        val recentUserEntities = db.getUserEntities()
+        setState {
+            copy(
+                recentUserEntities = recentUserEntities
+            )
         }
     }
 }

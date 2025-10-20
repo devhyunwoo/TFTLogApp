@@ -128,6 +128,6 @@ object AppModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): TFTDatabase {
         return Room.databaseBuilder(context, TFTDatabase::class.java, "TFTDatabase")
-            .fallbackToDestructiveMigrationFrom(true).build()
+            .fallbackToDestructiveMigrationFrom(true, 1, 2, 3, 4).build()
     }
 }

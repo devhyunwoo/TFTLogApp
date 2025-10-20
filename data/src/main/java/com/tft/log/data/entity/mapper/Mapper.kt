@@ -163,7 +163,7 @@ object Mapper {
         val wins = league?.let { "${it.wins}승" }
         val losses = league?.let { "${it.losses}패" }
         return UserEntity(
-            puuid = account?.puuid,
+            puuid = account?.puuid ?: "",
             nickname = "${account?.gameName}#${account?.tagLine}",
             level = summonerLevel.toString(),
             profileImage = createImageUrl(

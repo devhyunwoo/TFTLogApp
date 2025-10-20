@@ -1,7 +1,8 @@
-package com.tft.log.data.repository.dp
+package com.tft.log.data.repository.db
 
 import com.tft.log.data.entity.ChampionEntity
 import com.tft.log.data.entity.TraitEntity
+import com.tft.log.data.entity.UserEntity
 
 interface DatabaseRepository {
     suspend fun getChampions(ids: List<String>): List<ChampionEntity>?
@@ -11,4 +12,8 @@ interface DatabaseRepository {
     suspend fun setChampionEntities(championEntities: List<ChampionEntity>)
 
     suspend fun setTraitEntities(traitEntities: List<TraitEntity>)
+
+    suspend fun setUserEntity(userEntity: UserEntity)
+
+    suspend fun getUserEntities(): List<UserEntity>?
 }

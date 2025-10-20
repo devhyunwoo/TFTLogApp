@@ -6,7 +6,7 @@ import com.tft.log.data.entity.MatchEntity
 import com.tft.log.data.entity.UserEntity
 import com.tft.log.data.entity.mapper.Mapper.toMatchEntity
 import com.tft.log.data.entity.mapper.Mapper.toUserEntity
-import com.tft.log.data.repository.dp.DatabaseRepository
+import com.tft.log.data.repository.db.DatabaseRepository
 import com.tft.log.data.utils.ApiResult
 import com.tft.log.data.utils.safeApiCall
 import kotlinx.coroutines.async

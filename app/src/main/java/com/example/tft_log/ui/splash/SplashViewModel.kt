@@ -5,7 +5,7 @@ import com.example.tft_log.core.BaseViewModel
 import com.tft.log.data.entity.mapper.Mapper.toChampionEntity
 import com.tft.log.data.entity.mapper.Mapper.toTraitEntity
 import com.tft.log.data.repository.datastore.DatastoreRepository
-import com.tft.log.data.repository.dp.DatabaseRepository
+import com.tft.log.data.repository.db.DatabaseRepository
 import com.tft.log.data.repository.dragon.DragonRepository
 import com.tft.log.data.utils.ApiResult
 import com.tft.log.data.utils.CommonUtils.compareVersion

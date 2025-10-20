@@ -1,7 +1,8 @@
-package com.tft.log.data.repository.dp
+package com.tft.log.data.repository.db
 
 import com.tft.log.data.entity.ChampionEntity
 import com.tft.log.data.entity.TraitEntity
+import com.tft.log.data.entity.UserEntity
 import com.tft.log.data.room.database.TFTDatabase
 import javax.inject.Inject
 
@@ -23,6 +24,14 @@ class DatabaseRepositoryImpl @Inject constructor(
 
     override suspend fun setTraitEntities(traitEntities: List<TraitEntity>) {
         tftDatabase.getTFTDao().setTraitEntities(traitEntities = traitEntities)
+    }
+
+    override suspend fun setUserEntity(userEntity: UserEntity) {
+        tftDatabase.getUserDao().setUserEntity(userEntity = userEntity)
+    }
+
+    override suspend fun getUserEntities(): List<UserEntity>? {
+        return tftDatabase.getUserDao().getUserEntities()
     }
 
 }

@@ -2,8 +2,8 @@ package com.example.tft_log.di
 
 import com.tft.log.data.repository.datastore.DatastoreRepository
 import com.tft.log.data.repository.datastore.DatastoreRepositoryImpl
-import com.tft.log.data.repository.dp.DatabaseRepository
-import com.tft.log.data.repository.dp.DatabaseRepositoryImpl
+import com.tft.log.data.repository.db.DatabaseRepository
+import com.tft.log.data.repository.db.DatabaseRepositoryImpl
 import com.tft.log.data.repository.dragon.DragonRepository
 import com.tft.log.data.repository.dragon.DragonRepositoryImpl
 import com.tft.log.data.repository.paging.PagingRepository

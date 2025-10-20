@@ -20,6 +20,4 @@ interface TFTDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun setTraitEntities(traitEntities: List<TraitEntity>)
-
-
 }

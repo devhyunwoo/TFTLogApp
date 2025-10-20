@@ -26,6 +26,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.tft_log.ui.common.LoadingView
 import com.example.tft_log.ui.main.composable.MainTopbar
 import com.example.tft_log.ui.main.composable.matchItemsComponent
+import com.example.tft_log.ui.main.composable.recentSearchComponent
 import com.example.tft_log.ui.main.composable.userInfoComponent
 import com.example.tft_log.ui.theme.AppColors
 import kotlinx.coroutines.delay
@@ -102,6 +103,16 @@ fun MainScreen(
                             },
                             textFieldState = textFieldState,
                             currentText = currentText
+                        )
+                    }
+                }
+
+                if (state.hasSearch.not()) {
+                    recentSearchComponent(userEntities = state.recentUserEntities) { nickname ->
+                        viewModel.setEvent(
+                            MainContract.Event.OnClickSearch(
+                                text = nickname
+                            )
                         )
                     }
                 }

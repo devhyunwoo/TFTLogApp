@@ -10,7 +10,8 @@ sealed interface MainContract {
     data class State(
         val initialText: String,
         val hasSearch: Boolean,
-        val userEntity : UserEntity?
+        val userEntity : UserEntity?,
+        val recentUserEntities : List<UserEntity>?
     ) : UiState
 
     sealed class Event : UiEvent {
