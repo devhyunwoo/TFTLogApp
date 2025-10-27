@@ -14,8 +14,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,7 +32,6 @@ class MainViewModel @Inject constructor(
         initialText = "",
         hasSearch = false,
         userEntity = null,
-        recentUserEntities = emptyList()
     )
 ) {
     private val _puuid = MutableStateFlow<String?>(null)
@@ -40,11 +41,12 @@ class MainViewModel @Inject constructor(
         pagingRepository.getMatchPagingData(it)
     }.cachedIn(viewModelScope)
 
-    init {
-        viewModelScope.launch {
-            getUserEntitiesFromDB()
-        }
-    }
+    val recentUserEntities = db.getUserEntities()
+        ?.stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     override fun setEvent(event: MainContract.Event) {
         when (event) {
@@ -97,6 +99,17 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
+
+            MainContract.Event.OnClickFAB -> {
+                setState {
+                    copy(
+                        initialText = "",
+                        hasSearch = false,
+                        userEntity = null
+                    )
+                }
+                _puuid.value = ""
+            }
         }
     }
 
@@ -142,15 +155,6 @@ class MainViewModel @Inject constructor(
                     userEntity = userEntity
                 )
             }
-        }
-    }
-
-    suspend fun getUserEntitiesFromDB() {
-        val recentUserEntities = db.getUserEntities()
-        setState {
-            copy(
-                recentUserEntities = recentUserEntities
-            )
         }
     }
 }

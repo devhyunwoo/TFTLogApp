@@ -45,6 +45,7 @@ fun MainTopbar(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .padding(horizontal = 5.dp)
             .background(color = AppColors.Black, shape = CircleShape)
             .padding(start = 10.dp),
         verticalAlignment = Alignment.CenterVertically,

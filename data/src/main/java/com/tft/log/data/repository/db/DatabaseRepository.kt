@@ -3,6 +3,7 @@ package com.tft.log.data.repository.db
 import com.tft.log.data.entity.ChampionEntity
 import com.tft.log.data.entity.TraitEntity
 import com.tft.log.data.entity.UserEntity
+import kotlinx.coroutines.flow.Flow
 
 interface DatabaseRepository {
     suspend fun getChampions(ids: List<String>): List<ChampionEntity>?
@@ -15,5 +16,5 @@ interface DatabaseRepository {
 
     suspend fun setUserEntity(userEntity: UserEntity)
 
-    suspend fun getUserEntities(): List<UserEntity>?
+    fun getUserEntities(): Flow<List<UserEntity>>?
 }

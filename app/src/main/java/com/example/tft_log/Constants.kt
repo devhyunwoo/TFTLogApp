@@ -5,5 +5,5 @@ object Constants {
 
     const val BASE_URL_KR = "https://kr.api.riotgames.com/"
     const val DRAGON_BASE_URL = "https://ddragon.leagueoflegends.com/"
-    const val API_KEY = "RGAPI-5f58ba2d-fb7c-4617-9a98-95fcad754cd4"
+    const val API_KEY = "RGAPI-879c42d2-7429-4a46-b3a9-520f2f414892"
 }

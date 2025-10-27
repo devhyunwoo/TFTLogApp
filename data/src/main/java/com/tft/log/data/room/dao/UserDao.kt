@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.tft.log.data.entity.UserEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -12,5 +13,5 @@ interface UserDao {
     suspend fun setUserEntity(userEntity: UserEntity)
 
     @Query("SELECT * FROM UserEntity ORDER BY createdAt DESC LIMIT 10")
-    suspend fun getUserEntities(): List<UserEntity>?
+    fun getUserEntities(): Flow<List<UserEntity>>
 }

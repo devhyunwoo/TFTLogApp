@@ -4,6 +4,7 @@ import com.tft.log.data.entity.ChampionEntity
 import com.tft.log.data.entity.TraitEntity
 import com.tft.log.data.entity.UserEntity
 import com.tft.log.data.room.database.TFTDatabase
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DatabaseRepositoryImpl @Inject constructor(
@@ -30,8 +31,7 @@ class DatabaseRepositoryImpl @Inject constructor(
         tftDatabase.getUserDao().setUserEntity(userEntity = userEntity)
     }
 
-    override suspend fun getUserEntities(): List<UserEntity>? {
+    override fun getUserEntities(): Flow<List<UserEntity>>? {
         return tftDatabase.getUserDao().getUserEntities()
     }
-
 }

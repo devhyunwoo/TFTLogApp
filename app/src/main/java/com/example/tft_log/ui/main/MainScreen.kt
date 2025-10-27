@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.tft_log.ui.common.LoadingView
+import com.example.tft_log.ui.main.composable.FAB
 import com.example.tft_log.ui.main.composable.MainTopbar
 import com.example.tft_log.ui.main.composable.matchItemsComponent
 import com.example.tft_log.ui.main.composable.recentSearchComponent
@@ -38,6 +39,7 @@ fun MainScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val matchPagingData = viewModel.matchListFlow.collectAsLazyPagingItems()
+    val recentUserEntities = viewModel.recentUserEntities?.collectAsStateWithLifecycle()
     val isLoadingAppend = matchPagingData.loadState.append is LoadState.Loading
     val isLoadingRefresh by remember {
         derivedStateOf {
@@ -80,6 +82,13 @@ fun MainScreen(
             .imePadding()
             .padding(horizontal = 20.dp),
         containerColor = AppColors.PrimaryColor,
+        floatingActionButton = {
+            if (state.hasSearch) {
+                FAB(onClick = {
+                    viewModel.setEvent(MainContract.Event.OnClickFAB)
+                })
+            }
+        },
     ) { paddingValues ->
         Box(contentAlignment = Alignment.TopCenter) {
             LazyColumn(
@@ -107,8 +116,8 @@ fun MainScreen(
                     }
                 }
 
-                if (state.hasSearch.not()) {
-                    recentSearchComponent(userEntities = state.recentUserEntities) { nickname ->
+                if (state.hasSearch.not() && recentUserEntities?.value != null) {
+                    recentSearchComponent(userEntities = recentUserEntities.value) { nickname ->
                         viewModel.setEvent(
                             MainContract.Event.OnClickSearch(
                                 text = nickname
