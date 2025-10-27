@@ -1,6 +1,7 @@
 package com.example.tft_log.ui.main.composable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -23,7 +24,8 @@ fun FAB(
 ) {
     Box(
         modifier = Modifier
-            .background(AppColors.White, shape = CircleShape)
+            .background(AppColors.Gray100.copy(0.4f), shape = CircleShape)
+            .border(1.dp, AppColors.Gray600, CircleShape)
             .padding(5.dp)
             .clickable(interactionSource = remember { MutableInteractionSource() }, indication= null ) { onClick() }
     ) {
